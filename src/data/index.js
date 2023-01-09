@@ -1,9 +1,11 @@
 import { faker } from "@faker-js/faker";
 import {
+  ChatCenteredDots,
   ChatCircleDots,
   Gear,
   GearSix,
   Phone,
+  PhoneCall,
   SignOut,
   User,
   Users,
@@ -27,7 +29,8 @@ const Profile_Menu = [
 const Nav_Buttons = [
   {
     index: 0,
-    icon: <ChatCircleDots />,
+    // icon: <ChatCircleDots />,
+    icon: <ChatCenteredDots />,
   },
   {
     index: 1,
@@ -35,7 +38,8 @@ const Nav_Buttons = [
   },
   {
     index: 2,
-    icon: <Phone />,
+    // icon: <Phone />,
+    icon: <PhoneCall />,
   },
 ];
 
@@ -132,7 +136,7 @@ const ChatList = [
 const Chat_History = [
   {
     type: "msg",
-    message: "Hi 👋🏻, How are ya ?",
+    message: "Hi 👋🏻, How are you ?",
     incoming: true,
     outgoing: false,
   },
@@ -142,7 +146,7 @@ const Chat_History = [
   },
   {
     type: "msg",
-    message: "Hi 👋 Panda, not bad, u ?",
+    message: "Hi 👋 Omalicham, not bad, u ?",
     incoming: false,
     outgoing: true,
   },
@@ -154,7 +158,7 @@ const Chat_History = [
   },
   {
     type: "msg",
-    message: "Ya sure, sending you a pic",
+    message: "Ya sure, sending you a picture",
     incoming: true,
     outgoing: false,
   },
@@ -228,7 +232,7 @@ const SHARED_LINKS = [
     message: "Yep, I can also do that",
     incoming: true,
     outgoing: false,
-  }, 
+  },
   {
     type: "msg",
     subtype: "link",
@@ -236,7 +240,7 @@ const SHARED_LINKS = [
     message: "Yep, I can also do that",
     incoming: true,
     outgoing: false,
-  }, 
+  },
   {
     type: "msg",
     subtype: "link",
@@ -244,7 +248,7 @@ const SHARED_LINKS = [
     message: "Yep, I can also do that",
     incoming: true,
     outgoing: false,
-  }, 
+  },
   {
     type: "msg",
     subtype: "link",
@@ -252,7 +256,7 @@ const SHARED_LINKS = [
     message: "Yep, I can also do that",
     incoming: true,
     outgoing: false,
-  }, 
+  },
 ];
 
 const SHARED_DOCS = [
@@ -284,8 +288,7 @@ const SHARED_DOCS = [
     incoming: true,
     outgoing: false,
   },
- 
-]
+];
 
 export {
   Profile_Menu,
@@ -295,5 +298,5 @@ export {
   Chat_History,
   Message_options,
   SHARED_DOCS,
-  SHARED_LINKS
+  SHARED_LINKS,
 };

@@ -1,0 +1,48 @@
+import React from "react";
+import { Box, Stack } from "@mui/material";
+import { Chat_History } from "../../data";
+import { MediaMsg, TextMsg, Timeline } from "./MsgTypes";
+
+const Message = ({ menu }) => {
+  return (
+    <Box p={3}>
+      <Stack spacing={3}>
+        {Chat_History.map((el) => {
+          switch (el.type) {
+            case "divider":
+              // Timeline
+              return <Timeline el={el} />;
+
+            case "msg":
+              switch (el.subtype) {
+                case "img":
+                  // img msg
+                  return <MediaMsg el={el} />;
+
+                case "doc":
+                // Doc msg
+                //   return <DocMsg el={el} menu={menu} />;
+
+                case "link":
+                // Link msg
+                //   return <LinkMsg el={el} menu={menu} />;
+
+                case "reply":
+                //reply msg
+                //   return <ReplyMsg el={el} menu={menu} />;
+
+                default:
+                  // text msg
+                  return <TextMsg el={el} />;
+              }
+
+            default:
+              return <></>;
+          }
+        })}
+      </Stack>
+    </Box>
+  );
+};
+
+export default Message;

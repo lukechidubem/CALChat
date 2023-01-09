@@ -4,31 +4,32 @@ export default function Fab(theme) {
   return {
     MuiFab: {
       defaultProps: {
-        color: 'primary',
+        color: "primary",
       },
 
       styleOverrides: {
         root: {
           boxShadow: theme.customShadows.z8,
-          '&:hover': {
-            boxShadow: 'none',
+          "&:hover": {
+            boxShadow: "none",
             backgroundColor: theme.palette.grey[400],
           },
         },
         primary: {
           boxShadow: theme.customShadows.primary,
-          '&:hover': {
+          "&:hover": {
             backgroundColor: theme.palette.primary.dark,
+            // backgroundColor: "black",
           },
         },
         secondary: {
           boxShadow: theme.customShadows.secondary,
-          '&:hover': {
+          "&:hover": {
             backgroundColor: theme.palette.secondary.dark,
           },
         },
         extended: {
-          '& svg': {
+          "& svg": {
             marginRight: theme.spacing(1),
           },
         },
