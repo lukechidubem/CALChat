@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import SimpleBarReact from "simplebar-react";
+
 // import "simplebar-react/dist/simplebar.min.css";
 
 // @mui
@@ -25,7 +26,7 @@ const SimpleBarStyle = styled(SimpleBarReact)(({ theme }) => ({
     },
   },
   "& .simplebar-track.simplebar-vertical": {
-    width: 10,
+    width: "0 !important",
   },
   "& .simplebar-track.simplebar-horizontal .simplebar-scrollbar": {
     height: 6,

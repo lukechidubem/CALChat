@@ -16,9 +16,12 @@ import {
   PhoneCall,
   VideoCamera,
 } from "phosphor-react";
+import { ToggleSidebar } from "../../redux/slices/app";
+import { useDispatch } from "react-redux";
 
 const Header = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -39,10 +42,10 @@ const Header = () => {
         sx={{ width: "100%", height: "100%" }}
       >
         <Stack
-          //   onClick={() => {
-          //     //
-          //     dispatch(ToggleSidebar());
-          //   }}
+          onClick={() => {
+            //
+            dispatch(ToggleSidebar());
+          }}
           direction={"row"}
           spacing={2}
         >

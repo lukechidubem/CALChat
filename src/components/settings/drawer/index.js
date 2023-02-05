@@ -12,44 +12,44 @@ import {
 // hooks
 import useSettings from "../../../hooks/useSettings";
 // utils
-// import cssStyles from "../../../utils/cssStyles";
+import cssStyles from "../../../utils/cssStyles";
 // config
 import { NAVBAR, defaultSettings } from "../../../config";
 //
-// import Iconify from "../../Iconify";
-// import Scrollbar from "../../Scrollbar";
+import Iconify from "../../Iconify";
+import Scrollbar from "../../Scrollbar";
 // //
-// import ToggleButton from "./ToggleButton";
-// import SettingDirection from "./SettingDirection";
-// import SettingFullscreen from "./SettingFullscreen";
-// import SettingColorPresets from "./SettingColorPresets";
+import ToggleButton from "./ToggleButton";
+import SettingDirection from "./SettingDirection";
+import SettingFullscreen from "./SettingFullscreen";
+import SettingColorPresets from "./SettingColorPresets";
 
 // ----------------------------------------------------------------------
 
-// const RootStyle = styled(m.div)(({ theme }) => ({
-//   ...cssStyles(theme).bgBlur({
-//     color: theme.palette.background.paper,
-//     opacity: 0.92,
-//   }),
-//   top: 0,
-//   right: 0,
-//   bottom: 0,
-//   display: "flex",
-//   position: "fixed",
-//   overflow: "hidden",
-//   width: NAVBAR.BASE_WIDTH,
-//   flexDirection: "column",
-//   margin: theme.spacing(2),
-//   paddingBottom: theme.spacing(3),
-//   zIndex: theme.zIndex.drawer + 3,
-//   borderRadius: Number(theme.shape.borderRadius) * 1.5,
-//   boxShadow: `-24px 12px 32px -4px ${alpha(
-//     theme.palette.mode === "light"
-//       ? theme.palette.grey[500]
-//       : theme.palette.common.black,
-//     0.16
-//   )}`,
-// }));
+const RootStyle = styled(m.div)(({ theme }) => ({
+  ...cssStyles(theme).bgBlur({
+    color: theme.palette.background.paper,
+    opacity: 0.92,
+  }),
+  top: 0,
+  right: 0,
+  bottom: 0,
+  display: "flex",
+  position: "fixed",
+  overflow: "hidden",
+  width: NAVBAR.BASE_WIDTH,
+  flexDirection: "column",
+  margin: theme.spacing(2),
+  paddingBottom: theme.spacing(3),
+  zIndex: theme.zIndex.drawer + 3,
+  borderRadius: Number(theme.shape.borderRadius) * 1.5,
+  boxShadow: `-24px 12px 32px -4px ${alpha(
+    theme.palette.mode === "light"
+      ? theme.palette.grey[500]
+      : theme.palette.common.black,
+    0.16
+  )}`,
+}));
 
 // ----------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ export default function SettingsDrawer() {
 
   return (
     <>
-      {/* <Backdrop
+      <Backdrop
         open={open}
         onClick={handleClose}
         sx={{
@@ -100,7 +100,6 @@ export default function SettingsDrawer() {
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       />
-
       {!open && (
         <ToggleButton
           open={open}
@@ -108,7 +107,6 @@ export default function SettingsDrawer() {
           onToggle={handleToggle}
         />
       )}
-
       <AnimatePresence>
         {open && (
           <>
@@ -152,7 +150,7 @@ export default function SettingsDrawer() {
             </RootStyle>
           </>
         )}
-      </AnimatePresence> */}
+      </AnimatePresence>{" "}
     </>
   );
 }
