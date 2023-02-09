@@ -12,9 +12,10 @@ import {
   Link,
   Stack,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { RHFTextField } from "../../components/hook-form";
 import { Eye, EyeSlash } from "phosphor-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LoginUser } from "../../redux/slices/auth";
 
 // import useAuthStore from "../../zustand/auth";
@@ -22,6 +23,8 @@ import { LoginUser } from "../../redux/slices/auth";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+
+  const { isLoading } = useSelector((state) => state.auth);
 
   // const loginUser = useAuthStore((state) => state.loginUser);
 
@@ -104,12 +107,13 @@ const LoginForm = () => {
           Forgot Password?
         </Link>
       </Stack>
-      <Button
+      <LoadingButton
         fullWidth
         color="inherit"
         size="large"
         type="submit"
         variant="contained"
+        loading={isLoading}
         sx={{
           bgcolor: "text.primary",
           color: (theme) =>
@@ -122,7 +126,7 @@ const LoginForm = () => {
         }}
       >
         Login
-      </Button>
+      </LoadingButton>
     </FormProvider>
   );
 };

@@ -28,7 +28,8 @@ export default function Router() {
         { element: <LoginPage />, path: "login" },
         { element: <RegisterPage />, path: "register" },
         { element: <ResetPasswordPage />, path: "reset-password" },
-        { element: <NewPasswordPage />, path: "new-password" },
+        { element: <NewPasswordPage />, path: "new-password/:token" },
+        { path: "verify", element: <VerifyPage /> },
       ],
     },
     {
@@ -41,6 +42,7 @@ export default function Router() {
         { path: "call", element: <CallPage /> },
         { path: "group", element: <GroupPage /> },
         { path: "profile", element: <Profile /> },
+        { path: "chats", element: <Chats /> },
 
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },
@@ -61,7 +63,9 @@ const ResetPasswordPage = Loadable(
 const NewPasswordPage = Loadable(
   lazy(() => import("../pages/auth/NewPassword"))
 );
+const VerifyPage = Loadable(lazy(() => import("../pages/auth/Verify")));
 
+const Chats = Loadable(lazy(() => import("../pages/dashboard/Chats")));
 const CallPage = Loadable(lazy(() => import("../pages/dashboard/Call")));
 const GroupPage = Loadable(lazy(() => import("../pages/dashboard/Group")));
 

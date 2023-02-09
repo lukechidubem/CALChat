@@ -13,6 +13,8 @@ import { faker } from "@faker-js/faker";
 
 import { Profile_Menu } from "../../data";
 import { CaretCircleRight } from "phosphor-react";
+import { LogoutUser } from "../../redux/slices/auth";
+import { useDispatch } from "react-redux";
 // import useAuthStore from "../../zustand/auth";
 
 const getPath = (index) => {
@@ -34,6 +36,7 @@ const getPath = (index) => {
 const ProfileMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
+  const dispatch = useDispatch();
 
   // const logOut = useAuthStore((state) => state.logOut);
 
@@ -89,7 +92,13 @@ const ProfileMenu = () => {
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    handleChangeTab(el.index);
+
+                    if (el.index === 2) {
+                      // if index is = 2, logout user
+                      dispatch(LogoutUser());
+                    } else {
+                      handleChangeTab(el.index);
+                    }
                   }}
                 >
                   <Stack

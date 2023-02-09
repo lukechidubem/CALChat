@@ -9,9 +9,8 @@ const rootPeristConfig = {
   key: "root",
   storage,
   keyPrefix: "redux-",
-  // whitelist: [], things to include (persist)
-  // blacklist: [], things to exclude (not persist)
-  // leaving them out means that we need everything to be persisted
+  // whitelist: [],
+  // blacklist: [],
 };
 
 const rootReducer = combineReducers({

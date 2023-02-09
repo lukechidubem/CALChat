@@ -1,10 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
+import { toast } from "react-toastify";
+
+// import { showSnackbar } from "./app";
 
 const initialState = {
   isLoggedIn: false,
   token: "",
   isLoading: false,
+  user: null,
+  email: "",
+  error: false,
 };
 
 const slice = createSlice({
@@ -20,6 +26,15 @@ const slice = createSlice({
       state.isLoggedIn = false;
       state.token = "";
     },
+
+    updateIsLoading(state, action) {
+      state.error = action.payload.error;
+      state.isLoading = action.payload.isLoading;
+    },
+
+    updateRegisterEmail(state, action) {
+      state.email = action.payload.email;
+    },
   },
 });
 
@@ -27,9 +42,107 @@ export default slice.reducer;
 
 export function LoginUser(formValues) {
   return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
     await axios
       .post(
         "/api/users/login",
+        {
+          ...formValues,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+
+        toast.success("Login is successful");
+        dispatch(
+          slice.actions.LoginUser({
+            isLoggedIn: true,
+            token: response.data.token,
+          })
+        );
+
+        // dispatch(
+        //   showSnackbar({
+        //     severity: "success",
+        //     message: response.data.message,
+        //   })
+        // );
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        toast.error(error.response.data.message);
+
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: true })
+        );
+      });
+  };
+}
+
+export function LogoutUser() {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.SignOut());
+  };
+}
+
+export function forgotPassword(formValues) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
+    await axios
+      .post(
+        "/api/users/forgotPassword",
+        {
+          ...formValues,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        // dispatch(
+        //   showSnackbar({
+        //     severity: "success",
+        //     message: response.data.message,
+        //   })
+        // );
+        toast.success("Password reset link sent to your email");
+
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.message);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: true })
+        );
+      });
+  };
+}
+
+export function NewPassword(formValues, token) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
+    await axios
+      .patch(
+        `/api/users/resetPassword/${token}`,
         {
           ...formValues,
         },
@@ -47,7 +160,125 @@ export function LoginUser(formValues) {
             token: response.data.token,
           })
         );
+        toast.success("Password reset is successful");
+
+        // dispatch(
+        //   showSnackbar({
+        //     severity: "success",
+        //     message: response.data.message,
+        //   })
+        // );
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
+        );
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.message);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: true })
+        );
+      });
+  };
+}
+
+export function RegisterUser(formValues) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
+    await axios
+      .post(
+        "/api/users/signup",
+        {
+          ...formValues,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        dispatch(
+          slice.actions.updateRegisterEmail({ email: formValues.email })
+        );
+
+        toast.success("OTP sent to your email");
+
+        // dispatch(
+        //   showSnackbar({
+        //     severity: "success",
+        //     message: response.data.message,
+        //   })
+        // );
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+        toast.error(error.response.data.message);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        dispatch(
+          slice.actions.updateIsLoading({ error: true, isLoading: false })
+        );
+      })
+      .finally(() => {
+        if (!getState().auth.error) {
+          window.location.href = "/auth/verify";
+        }
+      });
+  };
+}
+
+export function VerifyEmail(formValues) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
+    await axios
+      .post(
+        "/api/users/verifyOTP",
+        {
+          ...formValues,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+
+        dispatch(slice.actions.updateRegisterEmail({ email: "" }));
+
+        dispatch(
+          slice.actions.LoginUser({
+            isLoggedIn: true,
+            token: response.data.token,
+          })
+        );
+        toast.success("New User verification is successful");
+
+        // dispatch(
+        //   showSnackbar({
+        //     severity: "success",
+        //     message: response.data.message,
+        //   })
+        // );
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        toast.error(error.response.data.message);
+        dispatch(
+          slice.actions.updateIsLoading({ error: true, isLoading: false })
+        );
+      });
   };
 }

@@ -25,13 +25,18 @@ import { AiFillEyeInvisible } from "react-icons/ai";
 import { AiFillEye } from "react-icons/ai";
 
 import ReCAPTCHA from "react-google-recaptcha";
+import { useDispatch, useSelector } from "react-redux";
+import { LoadingButton } from "@mui/lab";
+import { RegisterUser } from "../../redux/slices/auth";
 
 const RegisterForm = () => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [verified, setVerified] = useState(false);
+  const { isLoading } = useSelector((state) => state.auth);
 
   const RegisterSchema = Yup.object().shape({
-    fullName: Yup.string().required("Full Name is required"),
+    name: Yup.string().required("Name is required"),
     // lastName: Yup.string().required("Last Name is required"),
     email: Yup.string()
       .required("Email is required")
@@ -40,7 +45,7 @@ const RegisterForm = () => {
   });
 
   const defaultValues = {
-    fullName: "",
+    name: "",
     // lastName: "",
     email: "",
     password: "",
@@ -65,6 +70,7 @@ const RegisterForm = () => {
   const onSubmit = async (data) => {
     try {
       // submit data to backend
+      dispatch(RegisterUser(data));
     } catch (error) {
       console.log(error);
       reset();
@@ -83,7 +89,7 @@ const RegisterForm = () => {
         )}
 
         {/* <Stack direction={{ xs: "column", sm: "row" }} spacing={2}> */}
-        <RHFTextField name="fullName" label="Full Name" />
+        <RHFTextField name="name" label="Full Name" />
         {/* <RHFTextField name="lastName" label="Last Name" /> */}
         {/* </Stack> */}
 
@@ -115,13 +121,14 @@ const RegisterForm = () => {
           />
         </div>
 
-        <Button
+        <LoadingButton
           disabled={!verified}
           fullWidth
           color="inherit"
           size="large"
           type="submit"
           variant="contained"
+          loading={isLoading}
           sx={{
             bgcolor: "text.primary",
             color: (theme) =>
@@ -134,7 +141,7 @@ const RegisterForm = () => {
           }}
         >
           Create Account
-        </Button>
+        </LoadingButton>
       </Stack>
     </FormProvider>
   );
