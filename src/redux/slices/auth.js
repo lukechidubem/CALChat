@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
 import { toast } from "react-toastify";
+// import { Navigate } from "react-router-dom";
 
 // import { showSnackbar } from "./app";
 
@@ -8,9 +9,9 @@ const initialState = {
   isLoggedIn: false,
   token: "",
   isLoading: false,
-  user: null,
   email: "",
   error: false,
+  user: "",
 };
 
 const slice = createSlice({
@@ -20,11 +21,13 @@ const slice = createSlice({
     LoginUser(state, action) {
       state.isLoggedIn = action.payload.isLoggedIn;
       state.token = action.payload.token;
+      state.user = action.payload.user;
     },
 
     SignOut(state, action) {
       state.isLoggedIn = false;
       state.token = "";
+      state.user = "";
     },
 
     updateIsLoading(state, action) {
@@ -64,6 +67,7 @@ export function LoginUser(formValues) {
           slice.actions.LoginUser({
             isLoggedIn: true,
             token: response.data.token,
+            user: response.data.data.user,
           })
         );
 
@@ -158,6 +162,7 @@ export function NewPassword(formValues, token) {
           slice.actions.LoginUser({
             isLoggedIn: true,
             token: response.data.token,
+            user: response.data.data.user,
           })
         );
         toast.success("Password reset is successful");
@@ -201,6 +206,7 @@ export function RegisterUser(formValues) {
       )
       .then(function (response) {
         console.log(response);
+
         dispatch(
           slice.actions.updateRegisterEmail({ email: formValues.email })
         );
@@ -228,6 +234,8 @@ export function RegisterUser(formValues) {
       .finally(() => {
         if (!getState().auth.error) {
           window.location.href = "/auth/verify";
+          // toast.success("OTP sent to your email");
+          // return <Navigate to={"/auth/verify"} />;
         }
       });
   };
@@ -250,17 +258,19 @@ export function VerifyEmail(formValues) {
         }
       )
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
 
         dispatch(slice.actions.updateRegisterEmail({ email: "" }));
+
+        toast.success("New User verification is successful");
 
         dispatch(
           slice.actions.LoginUser({
             isLoggedIn: true,
             token: response.data.token,
+            user: response.data.data.user,
           })
         );
-        toast.success("New User verification is successful");
 
         // dispatch(
         //   showSnackbar({

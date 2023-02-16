@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -19,10 +19,29 @@ import {
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
-import ChatElement from "../../components/ChatElement";
+import ChatElement, { ChatElement2 } from "../../components/ChatElement";
+import { useDispatch, useSelector } from "react-redux";
+import { GetUserChats } from "../../redux/slices/chat";
 
 function Chats() {
   const theme = useTheme();
+
+  const dispatch = useDispatch();
+
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const { userChats } = useSelector((state) => state.chat);
+
+  // console.log("charts", userChats);
+  // console.log("recipient", recipientUser);
+  // console.log("user", user);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(GetUserChats(user._id));
+    }
+  }, [user, dispatch]);
+
   return (
     <Box
       sx={{
@@ -89,6 +108,13 @@ function Chats() {
               </Typography>
               {ChatList.filter((el) => !el.pinned).map((el) => {
                 return <ChatElement {...el} />;
+              })}
+
+              <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                Testing
+              </Typography>
+              {userChats.map((chat, index) => {
+                return <ChatElement2 chat={chat} user={user} />;
               })}
             </Stack>
             {/* </SimpleBar> */}

@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { Avatar, Badge, Box, Stack, Typography } from "@mui/material";
 // import StyledBadge from "./StyledBadge";
 import { styled, useTheme } from "@mui/material/styles";
+import useFetchRecipientUser from "../hooks/useFetchRecipient";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -82,3 +83,63 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
 };
 
 export default ChatElement;
+
+export const ChatElement2 = ({ chat, user }) => {
+  console.log(chat);
+  console.log("user", user);
+
+  const { recipientUser } = useFetchRecipientUser(chat, user);
+
+  console.log(recipientUser);
+
+  const theme = useTheme();
+  return (
+    <div>Userchat</div>
+    // <Box
+    //   sx={{
+    //     width: "100%",
+
+    //     borderRadius: 1,
+    //     backgroundColor:
+    //       theme.palette.mode === "light"
+    //         ? "#fff"
+    //         : theme.palette.background.default,
+    //   }}
+    //   p={2}
+    // >
+    //   <Stack
+    //     direction="row"
+    //     alignItems={"center"}
+    //     justifyContent="space-between"
+    //   >
+    //     <Stack direction="row" spacing={2}>
+    //       {recipientUser.data.verified ? (
+    //         <StyledBadge
+    //           overlap="circular"
+    //           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    //           variant="dot"
+    //         >
+    //           <Avatar src={faker.image.avatar()} />
+    //         </StyledBadge>
+    //       ) : (
+    //         // <Avatar src={faker.image.avatar()} />
+    //         <Avatar src={recipientUser.data.photo} />
+    //       )}
+
+    //       <Stack spacing={0.3}>
+    //         <Typography variant="subtitle2">
+    //           {recipientUser.data.name}
+    //         </Typography>
+    //         <Typography variant="caption">{`Hey ${recipientUser.data.name} we are testing`}</Typography>
+    //       </Stack>
+    //     </Stack>
+    //     <Stack spacing={2} alignItems="center">
+    //       <Typography sx={{ fontWeight: 600 }} variant="caption">
+    //         {"6:30"}
+    //       </Typography>
+    //       <Badge color="primary" badgeContent={4}></Badge>
+    //     </Stack>
+    //   </Stack>
+    // </Box>
+  );
+};

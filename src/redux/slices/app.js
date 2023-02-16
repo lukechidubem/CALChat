@@ -9,7 +9,7 @@ const initialState = {
     type: "CONTACT", // can be CONTACT, STARRED, SHARED
   },
 
-  isLoggedIn: true,
+  // isLoggedIn: true,
   tab: 0,
 
   // snackbar: {
