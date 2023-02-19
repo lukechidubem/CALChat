@@ -80,3 +80,54 @@ export function GetUserChats(userId) {
       });
   };
 }
+
+export function CreateChat(firstId, secondId) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
+    await axios
+      .post(
+        `/api/chats`,
+        {
+          firstId,
+          secondId,
+        },
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+
+        // toast.success("Login is successful");
+
+        dispatch(
+          slice.actions.getUserChats({
+            userChats: response.data.chats,
+          })
+        );
+
+        // dispatch(
+        //   showSnackbar({
+        //     severity: "success",
+        //     message: response.data.message,
+        //   })
+        // );
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: false })
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        // toast.error(error.response.data.message);
+
+        dispatch(
+          slice.actions.updateIsLoading({ isLoading: false, error: true })
+        );
+      });
+  };
+}

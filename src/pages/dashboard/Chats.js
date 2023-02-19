@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -19,9 +19,14 @@ import {
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
-import ChatElement, { ChatElement2 } from "../../components/ChatElement";
+import ChatElement, {
+  ChatElement2,
+  UsersChatElement,
+} from "../../components/ChatElement";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserChats } from "../../redux/slices/chat";
+import { CreateChat } from "../../redux/slices/chat";
+import { GetUsers } from "../../redux/slices/users";
 
 function Chats() {
   const theme = useTheme();
@@ -31,6 +36,10 @@ function Chats() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.auth);
   const { userChats } = useSelector((state) => state.chat);
+  // const { userChats } = useSelector((state) => state.chat);
+  const { users } = useSelector((state) => state.users);
+  const [potentialChats, setPotentialChats] = useState([]);
+  const [showPotentialChats, setShowPotentialChats] = useState(false);
 
   // console.log("charts", userChats);
   // console.log("recipient", recipientUser);
@@ -40,8 +49,36 @@ function Chats() {
     if (user) {
       dispatch(GetUserChats(user._id));
     }
-  }, [user, dispatch]);
+  }, [user]);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(GetUsers());
+    }
+
+    if (!users) return;
+
+    const privateChats = users.filter((u) => {
+      let isChatCreated = false;
+      if (user._id === u._id) return false;
+
+      if (userChats) {
+        isChatCreated = userChats?.some((chat) => {
+          return chat.members[0] === u._id || chat.members[1] === u._id;
+        });
+      }
+
+      return !isChatCreated;
+    });
+
+    setPotentialChats(privateChats);
+  }, [userChats]);
+
+  // const onStartChat = ()=>{
+
+  // }
+
+  // console.log("pChats", potentialChats);
   return (
     <Box
       sx={{
@@ -61,10 +98,14 @@ function Chats() {
           alignItems={"center"}
           justifyContent="space-between"
         >
-          <Typography variant="h5">Chats</Typography>
-          <IconButton>
+          <Button onClick={() => setShowPotentialChats(false)} variant="h5">
+            Chats
+          </Button>
+          {/* <IconButton>
             <CircleDashed />
-          </IconButton>
+          </IconButton> */}
+
+          <Button onClick={() => setShowPotentialChats(true)}>New Chats</Button>
         </Stack>
 
         <Stack sx={{ width: "100%" }}>
@@ -96,27 +137,43 @@ function Chats() {
           }}
         >
           <SimpleBarStyle timeout={500} clickOnTrack={false}>
-            <Stack spacing={2.4}>
-              <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                Pinned
-              </Typography>
-              {ChatList.filter((el) => el.pinned).map((el) => {
-                return <ChatElement {...el} />;
-              })}
-              <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                All Chats
-              </Typography>
-              {ChatList.filter((el) => !el.pinned).map((el) => {
-                return <ChatElement {...el} />;
-              })}
+            {!showPotentialChats ? (
+              <Stack spacing={2.4}>
+                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                  Pinned
+                </Typography>
+                {ChatList.filter((el) => el.pinned).map((el) => {
+                  return <ChatElement {...el} />;
+                })}
+                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                  All Chats
+                </Typography>
+                {ChatList.filter((el) => !el.pinned).map((el) => {
+                  return <ChatElement {...el} />;
+                })}
 
-              <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                Testing
-              </Typography>
-              {userChats.map((chat, index) => {
-                return <ChatElement2 chat={chat} user={user} />;
-              })}
-            </Stack>
+                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                  Testing
+                </Typography>
+                {userChats &&
+                  userChats.map((chat, index) => {
+                    return <ChatElement2 chat={chat} user={user} key={index} />;
+                  })}
+              </Stack>
+            ) : (
+              <Stack spacing={2.4}>
+                {potentialChats &&
+                  potentialChats.map((chat, index) => {
+                    return (
+                      <UsersChatElement
+                        key={index}
+                        chat={chat}
+                        onclick={() => dispatch(CreateChat(user._id, chat._id))}
+                      />
+                    );
+                  })}
+              </Stack>
+            )}
             {/* </SimpleBar> */}
           </SimpleBarStyle>
         </Stack>

@@ -85,61 +85,119 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
 export default ChatElement;
 
 export const ChatElement2 = ({ chat, user }) => {
-  console.log(chat);
-  console.log("user", user);
+  // console.log(chat);
+  // console.log("user", user);
 
   const { recipientUser } = useFetchRecipientUser(chat, user);
 
-  console.log(recipientUser);
+  // console.log(recipientUser);
 
   const theme = useTheme();
   return (
-    <div>Userchat</div>
-    // <Box
-    //   sx={{
-    //     width: "100%",
+    // <div>Userchat</div>
 
-    //     borderRadius: 1,
-    //     backgroundColor:
-    //       theme.palette.mode === "light"
-    //         ? "#fff"
-    //         : theme.palette.background.default,
-    //   }}
-    //   p={2}
-    // >
-    //   <Stack
-    //     direction="row"
-    //     alignItems={"center"}
-    //     justifyContent="space-between"
-    //   >
-    //     <Stack direction="row" spacing={2}>
-    //       {recipientUser.data.verified ? (
-    //         <StyledBadge
-    //           overlap="circular"
-    //           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-    //           variant="dot"
-    //         >
-    //           <Avatar src={faker.image.avatar()} />
-    //         </StyledBadge>
-    //       ) : (
-    //         // <Avatar src={faker.image.avatar()} />
-    //         <Avatar src={recipientUser.data.photo} />
-    //       )}
+    <Box
+      sx={{
+        width: "100%",
 
-    //       <Stack spacing={0.3}>
-    //         <Typography variant="subtitle2">
-    //           {recipientUser.data.name}
-    //         </Typography>
-    //         <Typography variant="caption">{`Hey ${recipientUser.data.name} we are testing`}</Typography>
-    //       </Stack>
-    //     </Stack>
-    //     <Stack spacing={2} alignItems="center">
-    //       <Typography sx={{ fontWeight: 600 }} variant="caption">
-    //         {"6:30"}
-    //       </Typography>
-    //       <Badge color="primary" badgeContent={4}></Badge>
-    //     </Stack>
-    //   </Stack>
-    // </Box>
+        borderRadius: 1,
+        backgroundColor:
+          theme.palette.mode === "light"
+            ? "#fff"
+            : theme.palette.background.default,
+      }}
+      p={2}
+    >
+      {recipientUser && (
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent="space-between"
+        >
+          <Stack direction="row" spacing={2}>
+            {recipientUser.data.verified ? (
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+              >
+                <Avatar src={faker.image.avatar()} />
+              </StyledBadge>
+            ) : (
+              // <Avatar src={faker.image.avatar()} />
+              <Avatar src={recipientUser.data.photo} />
+            )}
+
+            <Stack spacing={0.3}>
+              <Typography variant="subtitle2">
+                {recipientUser.data.name}
+              </Typography>
+              <Typography variant="caption">{`Hey ${recipientUser.data.name} we are testing`}</Typography>
+            </Stack>
+          </Stack>
+          <Stack spacing={2} alignItems="center">
+            <Typography sx={{ fontWeight: 600 }} variant="caption">
+              {"6:30"}
+            </Typography>
+            <Badge color="primary" badgeContent={4}></Badge>
+          </Stack>
+        </Stack>
+      )}
+    </Box>
+  );
+};
+
+export const UsersChatElement = ({ chat, onclick }) => {
+  const theme = useTheme();
+  return (
+    // <div>Userchat</div>
+
+    <Box
+      sx={{
+        width: "100%",
+
+        borderRadius: 1,
+        backgroundColor:
+          theme.palette.mode === "light"
+            ? "#fff"
+            : theme.palette.background.default,
+      }}
+      p={2}
+      onClick={onclick}
+    >
+      {chat && (
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent="space-between"
+        >
+          <Stack direction="row" spacing={2}>
+            {chat.verified ? (
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+              >
+                <Avatar src={faker.image.avatar()} />
+              </StyledBadge>
+            ) : (
+              // <Avatar src={faker.image.avatar()} />
+              <Avatar src={chat.photo} />
+            )}
+
+            <Stack spacing={0.3}>
+              <Typography variant="subtitle2">{chat.name}</Typography>
+              <Typography variant="caption">{`Hey ${chat.name} we are testing`}</Typography>
+            </Stack>
+          </Stack>
+          <Stack spacing={2} alignItems="center">
+            <Typography sx={{ fontWeight: 600 }} variant="caption">
+              {"6:30"}
+            </Typography>
+            <Badge color="primary" badgeContent={4}></Badge>
+          </Stack>
+        </Stack>
+      )}
+    </Box>
   );
 };
