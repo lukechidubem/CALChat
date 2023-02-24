@@ -7,10 +7,17 @@ import {
   Divider,
   Button,
 } from "@mui/material";
-import { ArchiveBox, CircleDashed, MagnifyingGlass } from "phosphor-react";
+import {
+  ArchiveBox,
+  CircleDashed,
+  MagnifyingGlass,
+  Users,
+} from "phosphor-react";
 import { useTheme } from "@mui/material/styles";
 // import { faker } from "@faker-js/faker";
 import { ChatList } from "../../data";
+import useResponsive from "../../hooks/useResponsive";
+import BottomNav from "../../layouts/dashboard/BottomNav";
 import { SimpleBarStyle } from "../../components/Scrollbar";
 
 // import SimpleBar from "simplebar-react";
@@ -27,6 +34,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetUserChats } from "../../redux/slices/chat";
 import { CreateChat } from "../../redux/slices/chat";
 import { GetUsers } from "../../redux/slices/users";
+import Friends from "../../sections/main/Friends";
 
 function Chats() {
   const theme = useTheme();
@@ -41,9 +49,16 @@ function Chats() {
   const [potentialChats, setPotentialChats] = useState([]);
   const [showPotentialChats, setShowPotentialChats] = useState(false);
 
-  // console.log("charts", userChats);
-  // console.log("recipient", recipientUser);
-  // console.log("user", user);
+  const isDesktop = useResponsive("up", "md");
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
 
   useEffect(() => {
     if (user) {
@@ -80,105 +95,133 @@ function Chats() {
 
   // console.log("pChats", potentialChats);
   return (
-    <Box
-      sx={{
-        position: "relative",
+    <>
+      <Box
+        sx={{
+          position: "relative",
 
-        width: 320,
-        backgroundColor:
-          theme.palette.mode === "light"
-            ? "#F8FAFF"
-            : theme.palette.background.paper,
-        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-      }}
-    >
-      <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
-        <Stack
-          direction="row"
-          alignItems={"center"}
-          justifyContent="space-between"
-        >
-          <Button onClick={() => setShowPotentialChats(false)} variant="h5">
-            Chats
-          </Button>
-          {/* <IconButton>
-            <CircleDashed />
-          </IconButton> */}
+          width: 320,
+          backgroundColor:
+            theme.palette.mode === "light"
+              ? "#F8FAFF"
+              : theme.palette.background.paper,
+          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+        }}
+      >
+        {!isDesktop && (
+          // Bottom Nav
+          <BottomNav />
+        )}
 
-          <Button onClick={() => setShowPotentialChats(true)}>New Chats</Button>
-        </Stack>
+        <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
+          <Stack
+            direction="row"
+            alignItems={"center"}
+            justifyContent="space-between"
+          >
+            <Button onClick={() => setShowPotentialChats(false)} variant="h5">
+              Chats
+            </Button>
 
-        <Stack sx={{ width: "100%" }}>
-          <Search>
-            <SearchIconWrapper>
-              <MagnifyingGlass color="#709CE6" />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search..."
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
-        </Stack>
-        <Stack spacing={1}>
-          <Stack direction="row" alignItems={"center"} spacing={1.5}>
-            <ArchiveBox size={24} />
-            <Button>Archive</Button>
+            <Button onClick={() => setShowPotentialChats(true)}>
+              New Chats
+            </Button>
+
+            <Stack direction={"row"} alignItems="center" spacing={1}>
+              <IconButton
+                onClick={() => {
+                  handleOpenDialog();
+                }}
+                sx={{ width: "max-content" }}
+              >
+                <Users />
+              </IconButton>
+              <IconButton sx={{ width: "max-content" }}>
+                <CircleDashed />
+              </IconButton>
+            </Stack>
           </Stack>
-          <Divider />
-        </Stack>
-        <Stack
-          className="scrollHide"
-          spacing={2}
-          direction="column"
-          sx={{
-            flexGrow: 1,
-            overflowY: "scroll",
-            height: "100%",
-          }}
-        >
-          <SimpleBarStyle timeout={500} clickOnTrack={false}>
-            {!showPotentialChats ? (
-              <Stack spacing={2.4}>
-                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                  Pinned
-                </Typography>
-                {ChatList.filter((el) => el.pinned).map((el) => {
-                  return <ChatElement {...el} />;
-                })}
-                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                  All Chats
-                </Typography>
-                {ChatList.filter((el) => !el.pinned).map((el) => {
-                  return <ChatElement {...el} />;
-                })}
 
-                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                  Testing
-                </Typography>
-                {userChats &&
-                  userChats.map((chat, index) => {
-                    return <ChatElement2 chat={chat} user={user} key={index} />;
+          <Stack sx={{ width: "100%" }}>
+            <Search>
+              <SearchIconWrapper>
+                <MagnifyingGlass color="#709CE6" />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search..."
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+          </Stack>
+          <Stack spacing={1}>
+            <Stack direction="row" alignItems={"center"} spacing={1.5}>
+              <ArchiveBox size={24} />
+              <Button>Archive</Button>
+            </Stack>
+            <Divider />
+          </Stack>
+          <Stack
+            className="scrollHide"
+            spacing={2}
+            direction="column"
+            sx={{
+              flexGrow: 1,
+              overflowY: "scroll",
+              height: "100%",
+            }}
+          >
+            <SimpleBarStyle timeout={500} clickOnTrack={false}>
+              {!showPotentialChats ? (
+                <Stack spacing={2.4}>
+                  <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                    Pinned
+                  </Typography>
+                  {ChatList.filter((el) => el.pinned).map((el) => {
+                    return <ChatElement {...el} />;
                   })}
-              </Stack>
-            ) : (
-              <Stack spacing={2.4}>
-                {potentialChats &&
-                  potentialChats.map((chat, index) => {
-                    return (
-                      <UsersChatElement
-                        key={index}
-                        chat={chat}
-                        onclick={() => dispatch(CreateChat(user._id, chat._id))}
-                      />
-                    );
+                  <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                    All Chats
+                  </Typography>
+                  {ChatList.filter((el) => !el.pinned).map((el) => {
+                    return <ChatElement {...el} />;
                   })}
-              </Stack>
-            )}
-            {/* </SimpleBar> */}
-          </SimpleBarStyle>
+
+                  <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                    Testing
+                  </Typography>
+                  {userChats &&
+                    userChats.map((chat, index) => {
+                      return (
+                        <ChatElement2 chat={chat} user={user} key={index} />
+                      );
+                    })}
+                </Stack>
+              ) : (
+                <Stack spacing={2.4}>
+                  {potentialChats &&
+                    potentialChats.map((chat, index) => {
+                      return (
+                        <UsersChatElement
+                          key={index}
+                          chat={chat}
+                          onclick={() =>
+                            dispatch(CreateChat(user._id, chat._id))
+                          }
+                        />
+                      );
+                    })}
+                </Stack>
+              )}
+              {/* </SimpleBar> */}
+            </SimpleBarStyle>
+          </Stack>
         </Stack>
-      </Stack>
-    </Box>
+      </Box>
+
+      {openDialog && (
+        <Friends open={openDialog} handleClose={handleCloseDialog} />
+      )}
+    </>
   );
 }
 

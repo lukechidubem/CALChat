@@ -12,6 +12,10 @@ const initialState = {
   // isLoggedIn: true,
   tab: 0,
 
+  users: [], // all users of app who are not friends and not requested yet
+  friends: [], // all friends
+  friendRequests: [], // all friend requests
+
   // snackbar: {
   //   open: null,
   //   severity: null,
