@@ -17,32 +17,93 @@ import { MagnifyingGlass } from "phosphor-react";
 import { CallElement } from "../../components/CallElement";
 import { CallList } from "../../data";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchUsers } from "../../redux/slices/app";
+import {
+  FetchUsers,
+  FetchFriendRequests,
+  FetchFriends,
+} from "../../redux/slices/users";
 import { GetUsers } from "../../redux/slices/users";
 
-import { UserElement } from "../../components/UserElement";
+import {
+  FriendElement,
+  FriendRequestElement,
+  UserElement,
+} from "../../components/UserElement";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Friends = ({ open, handleClose }) => {
+const UsersList = () => {
   const dispatch = useDispatch();
+
+  const { users } = useSelector((state) => state.users);
+
+  useEffect(() => {
+    dispatch(FetchUsers());
+  }, []);
+
+  return (
+    <>
+      {users.map((el, idx) => {
+        return <UserElement key={idx} {...el} />;
+      })}
+    </>
+  );
+};
+
+const FriendsList = () => {
+  const dispatch = useDispatch();
+
+  const { friends } = useSelector((state) => state.users);
+
+  useEffect(() => {
+    dispatch(FetchFriends());
+  }, []);
+
+  return (
+    <>
+      {friends.map((el, idx) => {
+        return <FriendElement key={idx} {...el} />;
+      })}
+    </>
+  );
+};
+
+const RequestsList = () => {
+  const dispatch = useDispatch();
+
+  const { friendRequests } = useSelector((state) => state.users);
+
+  useEffect(() => {
+    dispatch(FetchFriendRequests());
+  }, []);
+
+  return (
+    <>
+      {friendRequests.map((el, idx) => {
+        return <FriendRequestElement key={idx} {...el} />;
+      })}
+    </>
+  );
+};
+
+const Friends = ({ open, handleClose }) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    dispatch(FetchUsers());
-    // dispatch(GetUsers());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(FetchUsers());
+  //   // dispatch(GetUsers());
+  // }, []);
 
-  const { users } = useSelector((state) => state.app);
+  // const { users } = useSelector((state) => state.app);
   //   const {users} = useSelector((state) => state.users);
 
-  console.log(users);
+  // console.log(users);
 
   return (
     <Dialog
@@ -78,16 +139,13 @@ const Friends = ({ open, handleClose }) => {
             {(() => {
               switch (value) {
                 case 0:
-                  return users.map((el, idx) => {
-                    return <UserElement key={idx} {...el} />;
-                  });
-                  break;
+                  return <UsersList />;
+
                 case 1:
-                  return <></>;
-                  break;
+                  return <FriendsList />;
+
                 case 2:
-                  return <></>;
-                  break;
+                  return <RequestsList />;
 
                 default:
                   break;

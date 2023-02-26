@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -12,6 +12,7 @@ import ThemeProvider from "./theme";
 import ThemeSettings from "./components/settings";
 import "./style.css";
 // import { closeSnackBar } from "./redux/slices/app";
+import socket from "./socket";
 
 // const vertical = "bottom";
 // const horizontal = "center";
@@ -21,6 +22,16 @@ import "./style.css";
 // ));
 
 function App() {
+  useEffect(() => {
+    socket.on("new_friend_request", (data) => {
+      alert("New friend request received");
+      console.log(data);
+    });
+
+    // Remove event listener on component unmount
+    return () => socket.off("new_friend_request");
+  }, []);
+
   // const dispatch = useDispatch();
   // const { severity, message, open } = useSelector(
   //   (state) => state.app.snackbar

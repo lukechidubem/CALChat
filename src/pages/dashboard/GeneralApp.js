@@ -5,21 +5,22 @@ import Contact from "../../components/Contact";
 import Conversation from "../../components/Conversation";
 import Chats from "./Chats";
 import NoChat from "../../assets/Illustration/NoChat";
+import SignupImg from "../../assets/Images/logo-black.png";
 
 import { useSelector } from "react-redux";
 import SharedMessages from "../../components/SharedMessages";
 import StarredMessages from "../../components/StarredMessages";
 import { Link, useSearchParams } from "react-router-dom";
-import socket from "../../socket";
+// import socket from "../../socket";
 
 const GeneralApp = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const { sidebar } = useSelector((store) => store.app);
 
-  const joinRoom = () => {
-    socket.emit("hello", { message: "Hi there" });
-  };
+  // const joinRoom = () => {
+  //   socket.emit("hello", { message: "Hi there" });
+  // };
 
   return (
     <Stack direction={"row"} sx={{ width: "100%" }}>
@@ -52,7 +53,9 @@ const GeneralApp = () => {
             alignItems="center"
             justifyContent={"center"}
           >
-            <NoChat />
+            {/* <NoChat /> */}
+            <img className="rounded-xl" src={SignupImg} alt="" />
+
             <Typography variant="subtitle2">
               Select a conversation or start a{" "}
               <Link

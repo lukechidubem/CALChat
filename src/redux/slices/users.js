@@ -5,15 +5,23 @@ import { toast } from "react-toastify";
 const initialState = {
   isLoading: false,
   error: false,
-  users: null,
+  users: [], // all users of app who are not friends and not requested yet
+  friends: [], // all friends
+  friendRequests: [], // all friend requests
 };
 
 const slice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    getUsers(state, action) {
+    updateUsers(state, action) {
       state.users = action.payload.users;
+    },
+    updateFriends(state, action) {
+      state.friends = action.payload.friends;
+    },
+    updateFriendRequests(state, action) {
+      state.friendRequests = action.payload.requests;
     },
 
     updateIsLoading(state, action) {
@@ -45,7 +53,7 @@ export function GetUsers() {
         // toast.success("Login is successful");
 
         dispatch(
-          slice.actions.getUsers({
+          slice.actions.updateUsers({
             users: response.data,
           })
         );
@@ -60,6 +68,76 @@ export function GetUsers() {
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
         );
+      });
+  };
+}
+
+export function FetchUsers() {
+  return async (dispatch, getState) => {
+    await axios
+      .get(
+        "/api/users/getAll",
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        dispatch(slice.actions.updateUsers({ users: response.data.data }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+}
+
+export function FetchFriends() {
+  return async (dispatch, getState) => {
+    await axios
+      .get(
+        "/api/users/getFriends",
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        dispatch(slice.actions.updateFriends({ friends: response.data.data }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+}
+export function FetchFriendRequests() {
+  return async (dispatch, getState) => {
+    await axios
+      .get(
+        "/api/users/getRequests",
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        dispatch(
+          slice.actions.updateFriendRequests({ requests: response.data.data })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 }

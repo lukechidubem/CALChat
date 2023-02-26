@@ -12,6 +12,7 @@ const initialState = {
   email: "",
   error: false,
   user: "",
+  user_id: null,
 };
 
 const slice = createSlice({
@@ -22,12 +23,14 @@ const slice = createSlice({
       state.isLoggedIn = action.payload.isLoggedIn;
       state.token = action.payload.token;
       state.user = action.payload.user;
+      state.user_id = action.payload.user_id;
     },
 
     SignOut(state, action) {
       state.isLoggedIn = false;
       state.token = "";
       state.user = "";
+      state.user_id = null;
     },
 
     updateIsLoading(state, action) {
@@ -68,8 +71,11 @@ export function LoginUser(formValues) {
             isLoggedIn: true,
             token: response.data.token,
             user: response.data.data.user,
+            user_id: response.data.user_id,
           })
         );
+
+        window.localStorage.setItem("user_id", response.data.user_id);
 
         // dispatch(
         //   showSnackbar({
@@ -163,8 +169,12 @@ export function NewPassword(formValues, token) {
             isLoggedIn: true,
             token: response.data.token,
             user: response.data.data.user,
+            user_id: response.data.user_id,
           })
         );
+
+        window.localStorage.setItem("user_id", response.data.user_id);
+
         toast.success("Password reset is successful");
 
         // dispatch(
@@ -269,8 +279,11 @@ export function VerifyEmail(formValues) {
             isLoggedIn: true,
             token: response.data.token,
             user: response.data.data.user,
+            user_id: response.data.user_id,
           })
         );
+
+        window.localStorage.setItem("user_id", response.data.user_id);
 
         // dispatch(
         //   showSnackbar({
