@@ -15,6 +15,8 @@ import { Profile_Menu } from "../../data";
 import { CaretCircleRight } from "phosphor-react";
 import { LogoutUser } from "../../redux/slices/auth";
 import { useDispatch } from "react-redux";
+
+import { socket } from "../../socket";
 // import useAuthStore from "../../zustand/auth";
 
 const getPath = (index) => {
@@ -96,6 +98,7 @@ const ProfileMenu = () => {
                     if (el.index === 2) {
                       // if index is = 2, logout user
                       dispatch(LogoutUser());
+                      socket.emit("end");
                     } else {
                       handleChangeTab(el.index);
                     }

@@ -8,6 +8,7 @@ const initialState = {
   users: [], // all users of app who are not friends and not requested yet
   friends: [], // all friends
   friendRequests: [], // all friend requests
+  socket: null,
 };
 
 const slice = createSlice({
@@ -27,6 +28,10 @@ const slice = createSlice({
     updateIsLoading(state, action) {
       state.error = action.payload.error;
       state.isLoading = action.payload.isLoading;
+    },
+
+    updateSocket(state, action) {
+      state.socket = action.payload.socket;
     },
   },
 });
@@ -139,5 +144,11 @@ export function FetchFriendRequests() {
       .catch((err) => {
         console.log(err);
       });
+  };
+}
+
+export function UpdateSocket(socket) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateSocket({ socket }));
   };
 }

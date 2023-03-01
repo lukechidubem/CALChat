@@ -12,7 +12,7 @@ import ThemeProvider from "./theme";
 import ThemeSettings from "./components/settings";
 import "./style.css";
 // import { closeSnackBar } from "./redux/slices/app";
-import socket from "./socket";
+// import socket from "./socket";
 
 // const vertical = "bottom";
 // const horizontal = "center";
@@ -22,15 +22,15 @@ import socket from "./socket";
 // ));
 
 function App() {
-  useEffect(() => {
-    socket.on("new_friend_request", (data) => {
-      alert("New friend request received");
-      console.log(data);
-    });
+  // useEffect(() => {
+  //   socket.on("new_friend_request", (data) => {
+  //     alert("New friend request received");
+  //     console.log(data);
+  //   });
 
-    // Remove event listener on component unmount
-    return () => socket.off("new_friend_request");
-  }, []);
+  //   // Remove event listener on component unmount
+  //   return () => socket.off("new_friend_request");
+  // }, []);
 
   // const dispatch = useDispatch();
   // const { severity, message, open } = useSelector(

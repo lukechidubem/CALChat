@@ -17,7 +17,8 @@ import {
   Chat,
 } from "phosphor-react";
 
-import socket from "../socket";
+import { socket } from "../socket";
+import { useSelector } from "react-redux";
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
   "&:hover": {
@@ -54,8 +55,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const UserElement = ({ img, name, incoming, missed, online, _id }) => {
+const UserElement = ({ photo, name, incoming, missed, online, _id }) => {
   const theme = useTheme();
+  const { user_id } = useSelector((state) => state.auth);
 
   // const name = `${firstName} ${lastName}`;
 
@@ -83,10 +85,10 @@ const UserElement = ({ img, name, incoming, missed, online, _id }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar alt={name} src={img} />
+              <Avatar alt={name} src={photo} />
             </StyledBadge>
           ) : (
-            <Avatar alt={name} src={img} />
+            <Avatar alt={name} src={photo} />
           )}
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
@@ -95,7 +97,7 @@ const UserElement = ({ img, name, incoming, missed, online, _id }) => {
         <Stack direction={"row"} spacing={2} alignItems={"center"}>
           <Button
             onClick={() => {
-              socket.emit("friend_request", { to: _id }, () => {
+              socket.emit("friend_request", { to: _id, from: user_id }, () => {
                 alert("request sent");
               });
             }}
@@ -108,7 +110,14 @@ const UserElement = ({ img, name, incoming, missed, online, _id }) => {
   );
 };
 
-const FriendRequestElement = ({ img, name, incoming, missed, online, _id }) => {
+const FriendRequestElement = ({
+  photo,
+  name,
+  incoming,
+  missed,
+  online,
+  id,
+}) => {
   const theme = useTheme();
 
   // const name = `${firstName} ${lastName}`;
@@ -137,10 +146,10 @@ const FriendRequestElement = ({ img, name, incoming, missed, online, _id }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar alt={name} src={img} />
+              <Avatar alt={name} src={photo} />
             </StyledBadge>
           ) : (
-            <Avatar alt={name} src={img} />
+            <Avatar alt={name} src={photo} />
           )}
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
@@ -150,6 +159,7 @@ const FriendRequestElement = ({ img, name, incoming, missed, online, _id }) => {
           <Button
             onClick={() => {
               //  emit "accept_request" event
+              socket.emit("accept_request", { request_id: id });
             }}
           >
             Accept Request
@@ -162,7 +172,7 @@ const FriendRequestElement = ({ img, name, incoming, missed, online, _id }) => {
 
 // FriendElement
 
-const FriendElement = ({ img, name, incoming, missed, online, _id }) => {
+const FriendElement = ({ photo, name, incoming, missed, online, _id }) => {
   const theme = useTheme();
 
   // const name = `${firstName} ${lastName}`;
@@ -191,10 +201,10 @@ const FriendElement = ({ img, name, incoming, missed, online, _id }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar alt={name} src={img} />
+              <Avatar alt={name} src={photo} />
             </StyledBadge>
           ) : (
-            <Avatar alt={name} src={img} />
+            <Avatar alt={name} src={photo} />
           )}
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
