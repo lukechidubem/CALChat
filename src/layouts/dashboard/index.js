@@ -42,7 +42,8 @@ const DashboardLayout = () => {
       });
 
       socket.on("request_sent", (data) => {
-        toast.success(data.message);
+        // toast.success(data.message);
+        toast.success("Request Sent successfully!");
       });
     }
 
