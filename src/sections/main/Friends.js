@@ -52,7 +52,7 @@ const UsersList = () => {
   );
 };
 
-const FriendsList = () => {
+const FriendsList = ({ handleClose }) => {
   const dispatch = useDispatch();
 
   const { friends } = useSelector((state) => state.users);
@@ -64,7 +64,7 @@ const FriendsList = () => {
   return (
     <>
       {friends.map((el, idx) => {
-        return <FriendElement key={idx} {...el} />;
+        return <FriendElement key={idx} {...el} handleClose={handleClose} />;
       })}
     </>
   );
@@ -142,7 +142,7 @@ const Friends = ({ open, handleClose }) => {
                   return <UsersList />;
 
                 case 1:
-                  return <FriendsList />;
+                  return <FriendsList handleClose={handleClose} />;
 
                 case 2:
                   return <RequestsList />;

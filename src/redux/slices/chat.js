@@ -6,6 +6,9 @@ const initialState = {
   userChats: "",
   isLoading: false,
   error: false,
+
+  chat_type: null,
+  room_id: null,
 };
 
 const slice = createSlice({
@@ -29,6 +32,11 @@ const slice = createSlice({
     // updateRegisterEmail(state, action) {
     //   state.email = action.payload.email;
     // },
+
+    selectConversation(state, action) {
+      state.chat_type = "individual";
+      state.room_id = action.payload.room_id;
+    },
   },
 });
 
@@ -59,21 +67,12 @@ export function GetUserChats(userId) {
           })
         );
 
-        // dispatch(
-        //   showSnackbar({
-        //     severity: "success",
-        //     message: response.data.message,
-        //   })
-        // );
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: false })
         );
       })
       .catch((error) => {
         console.log(error);
-        // dispatch(showSnackbar({ severity: "error", message: error.message }));
-        // toast.error(error.response.data.message);
-
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
         );
@@ -110,24 +109,21 @@ export function CreateChat(firstId, secondId) {
           })
         );
 
-        // dispatch(
-        //   showSnackbar({
-        //     severity: "success",
-        //     message: response.data.message,
-        //   })
-        // );
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: false })
         );
       })
       .catch((error) => {
         console.log(error);
-        // dispatch(showSnackbar({ severity: "error", message: error.message }));
-        // toast.error(error.response.data.message);
-
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
         );
       });
   };
 }
+
+export const SelectConversation = ({ room_id }) => {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.selectConversation({ room_id }));
+  };
+};

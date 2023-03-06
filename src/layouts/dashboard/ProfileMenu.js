@@ -44,6 +44,8 @@ const ProfileMenu = () => {
 
   const navigate = useNavigate();
 
+  const user_id = window.localStorage.getItem("user_id");
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -98,7 +100,7 @@ const ProfileMenu = () => {
                     if (el.index === 2) {
                       // if index is = 2, logout user
                       dispatch(LogoutUser());
-                      socket.emit("end");
+                      socket.emit("end", { user_id });
                     } else {
                       handleChangeTab(el.index);
                     }

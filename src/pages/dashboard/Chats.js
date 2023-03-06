@@ -35,23 +35,40 @@ import { GetUserChats } from "../../redux/slices/chat";
 import { CreateChat } from "../../redux/slices/chat";
 import { GetUsers } from "../../redux/slices/users";
 import Friends from "../../sections/main/Friends";
+import { socket } from "../../socket";
+import { FetchDirectConversations } from "../../redux/slices/conversation";
+
+const user_id = window.localStorage.getItem("user_id");
 
 function Chats() {
   const theme = useTheme();
 
   const dispatch = useDispatch();
 
+  const { conversations } = useSelector(
+    (state) => state.conversation.direct_chat
+  );
+
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.auth);
   const { userChats } = useSelector((state) => state.chat);
   // const { userChats } = useSelector((state) => state.chat);
-  const { users } = useSelector((state) => state.users);
+  const { users, friends } = useSelector((state) => state.users);
   const [potentialChats, setPotentialChats] = useState([]);
   const [showPotentialChats, setShowPotentialChats] = useState(false);
 
   const isDesktop = useResponsive("up", "md");
 
   const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    socket.emit("get_direct_conversations", { user_id }, (data) => {
+      console.log(data); // this data is the list of conversations
+      // dispatch action
+
+      dispatch(FetchDirectConversations({ conversations: data }));
+    });
+  }, []);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -156,7 +173,7 @@ function Chats() {
           <Stack spacing={1}>
             <Stack direction="row" alignItems={"center"} spacing={1.5}>
               <ArchiveBox size={24} />
-              <Button>Archive</Button>
+              <Button variant="text">Archive</Button>
             </Stack>
             <Divider />
           </Stack>
@@ -173,20 +190,22 @@ function Chats() {
             <SimpleBarStyle timeout={500} clickOnTrack={false}>
               {!showPotentialChats ? (
                 <Stack spacing={2.4}>
-                  <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                  {/* <Typography variant="subtitle2" sx={{ color: "#676767" }}>
                     Pinned
                   </Typography>
                   {ChatList.filter((el) => el.pinned).map((el) => {
                     return <ChatElement {...el} />;
-                  })}
+                  })} */}
                   <Typography variant="subtitle2" sx={{ color: "#676767" }}>
                     All Chats
                   </Typography>
-                  {ChatList.filter((el) => !el.pinned).map((el) => {
-                    return <ChatElement {...el} />;
-                  })}
+                  {conversations
+                    .filter((el) => !el.pinned)
+                    .map((el, idx) => {
+                      return <ChatElement {...el} />;
+                    })}
 
-                  <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                  {/* <Typography variant="subtitle2" sx={{ color: "#676767" }}>
                     Testing
                   </Typography>
                   {userChats &&
@@ -194,21 +213,14 @@ function Chats() {
                       return (
                         <ChatElement2 chat={chat} user={user} key={index} />
                       );
-                    })}
+                    })} */}
                 </Stack>
               ) : (
                 <Stack spacing={2.4}>
-                  {potentialChats &&
-                    potentialChats.map((chat, index) => {
-                      return (
-                        <UsersChatElement
-                          key={index}
-                          chat={chat}
-                          onclick={() =>
-                            dispatch(CreateChat(user._id, chat._id))
-                          }
-                        />
-                      );
+                  {friends &&
+                    // potentialChats.map((el, index) => {
+                    friends.map((el, index) => {
+                      return <ChatElement {...el} />;
                     })}
                 </Stack>
               )}

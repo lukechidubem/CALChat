@@ -18,7 +18,9 @@ import {
 } from "phosphor-react";
 
 import { socket } from "../socket";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
+
+const user_id = window.localStorage.getItem("user_id");
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
   "&:hover": {
@@ -57,7 +59,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const UserElement = ({ photo, name, incoming, missed, online, _id }) => {
   const theme = useTheme();
-  const { user_id } = useSelector((state) => state.auth);
+
+  // const { user_id } = useSelector((state) => state.auth);
 
   // const name = `${firstName} ${lastName}`;
 
@@ -172,7 +175,15 @@ const FriendRequestElement = ({
 
 // FriendElement
 
-const FriendElement = ({ photo, name, incoming, missed, online, _id }) => {
+const FriendElement = ({
+  photo,
+  name,
+  incoming,
+  missed,
+  online,
+  _id,
+  handleClose,
+}) => {
   const theme = useTheme();
 
   // const name = `${firstName} ${lastName}`;
@@ -214,6 +225,9 @@ const FriendElement = ({ photo, name, incoming, missed, online, _id }) => {
           <IconButton
             onClick={() => {
               // start a new conversation
+              socket.emit("start_conversation", { to: _id, from: user_id });
+
+              handleClose();
             }}
           >
             <Chat />

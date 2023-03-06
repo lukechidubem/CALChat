@@ -65,7 +65,6 @@ export function LoginUser(formValues) {
       .then((response) => {
         console.log(response);
 
-        toast.success("Login is successful");
         dispatch(
           slice.actions.LoginUser({
             isLoggedIn: true,
@@ -75,6 +74,7 @@ export function LoginUser(formValues) {
           })
         );
 
+        toast.success("Login is successful");
         window.localStorage.setItem("user_id", response.data.user_id);
 
         // dispatch(

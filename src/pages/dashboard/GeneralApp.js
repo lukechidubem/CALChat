@@ -17,6 +17,7 @@ const GeneralApp = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const { sidebar } = useSelector((store) => store.app);
+  const { room_id, chat_type } = useSelector((store) => store.chat);
 
   // const joinRoom = () => {
   //   socket.emit("hello", { message: "Hi there" });
@@ -43,8 +44,7 @@ const GeneralApp = () => {
       >
         {/* <Conversation /> */}
 
-        {searchParams.get("type") === "individual-chat" &&
-        searchParams.get("id") ? (
+        {chat_type === "individual" && room_id !== null ? (
           <Conversation />
         ) : (
           <Stack

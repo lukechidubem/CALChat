@@ -1,8 +1,20 @@
 import { faker } from "@faker-js/faker";
 import { Avatar, Badge, Box, Stack, Typography } from "@mui/material";
 // import StyledBadge from "./StyledBadge";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled, useTheme, alpha } from "@mui/material/styles";
+import { useDispatch, useSelector } from "react-redux";
 import useFetchRecipientUser from "../hooks/useFetchRecipient";
+import { SelectConversation } from "../redux/slices/chat";
+
+const truncateText = (string, n) => {
+  return string?.length > n ? `${string?.slice(0, n)}...` : string;
+};
+
+const StyledChatBox = styled(Box)(({ theme }) => ({
+  "&:hover": {
+    cursor: "pointer",
+  },
+}));
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -33,18 +45,35 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
+const ChatElement = ({ id, name, photo, msg, time, unread, online }) => {
   const theme = useTheme();
+
+  const dispatch = useDispatch();
+  const { room_id } = useSelector((state) => state.chat);
+
+  const selectedChatId = room_id?.toString();
+
+  let isSelected = selectedChatId === id;
+
+  if (!selectedChatId) {
+    isSelected = false;
+  }
+
   return (
-    <Box
+    <StyledChatBox
+      onClick={() => {
+        dispatch(SelectConversation({ room_id: id }));
+      }}
       sx={{
         width: "100%",
 
-        borderRadius: 1,
-        backgroundColor:
-          theme.palette.mode === "light"
-            ? "#fff"
-            : theme.palette.background.default,
+        backgroundColor: isSelected
+          ? theme.palette.mode === "light"
+            ? alpha(theme.palette.primary.main, 0.5)
+            : theme.palette.primary.main
+          : theme.palette.mode === "light"
+          ? "#fff"
+          : theme.palette.background.default,
       }}
       p={2}
     >
@@ -60,25 +89,29 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar src={faker.image.avatar()} />
+              <Avatar src={photo} alt={name} />
             </StyledBadge>
           ) : (
-            <Avatar src={faker.image.avatar()} />
+            <Avatar src={photo} alt={name} />
           )}
 
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
-            <Typography variant="caption">{msg}</Typography>
+            <Typography variant="caption">{truncateText(msg, 20)}</Typography>
           </Stack>
         </Stack>
         <Stack spacing={2} alignItems="center">
           <Typography sx={{ fontWeight: 600 }} variant="caption">
             {time}
           </Typography>
-          <Badge color="primary" badgeContent={unread}></Badge>
+          <Badge
+            className="unread-count"
+            color="primary"
+            badgeContent={unread}
+          ></Badge>
         </Stack>
       </Stack>
-    </Box>
+    </StyledChatBox>
   );
 };
 
