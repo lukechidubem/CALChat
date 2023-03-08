@@ -75,6 +75,7 @@ export function LoginUser(formValues) {
         );
 
         toast.success("Login is successful");
+
         window.localStorage.setItem("user_id", response.data.user_id);
 
         // dispatch(

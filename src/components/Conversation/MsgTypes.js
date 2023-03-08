@@ -3,15 +3,55 @@ import {
   Box,
   Divider,
   IconButton,
-  Link,
   Menu,
   MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { DotsThreeVertical, DownloadSimple, Image } from "phosphor-react";
 import { Message_options } from "../../data";
+import { Link } from "react-router-dom";
+import truncateString from "../../utils/truncate";
+
+const MessageOptions = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <DotsThreeVertical
+        id="basic-button"
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+        size={20}
+      />
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <Stack spacing={1} px={1}>
+          {Message_options.map((el) => (
+            <MenuItem onClick={handleClick}>{el.title}</MenuItem>
+          ))}
+        </Stack>
+      </Menu>
+    </>
+  );
+};
 
 const DocMsg = ({ el, menu }) => {
   const theme = useTheme();
@@ -21,7 +61,7 @@ const DocMsg = ({ el, menu }) => {
         p={1.5}
         sx={{
           backgroundColor: el.incoming
-            ? theme.palette.background.default
+            ? alpha(theme.palette.background.default, 1)
             : theme.palette.primary.main,
           borderRadius: 1.5, // 1.5 * 8 => 12 px
           width: "max-content",
@@ -65,7 +105,7 @@ const LinkMsg = ({ el, menu }) => {
         p={1.5}
         sx={{
           backgroundColor: el.incoming
-            ? theme.palette.background.default
+            ? alpha(theme.palette.background.default, 1)
             : theme.palette.primary.main,
           borderRadius: 1.5, // 1.5 * 8 => 12 px
           width: "max-content",
@@ -95,14 +135,15 @@ const LinkMsg = ({ el, menu }) => {
                 component={Link}
                 to="//https://github.com/lukechidubem/CALChat"
               >
-                Project source code
+                {truncateString("https://github.com/lukechidubem/CALChat", 16)}{" "}
               </Typography>
             </Stack>
             <Typography
               variant="body2"
               color={el.incoming ? theme.palette.text : "#fff"}
             >
-              {el.message}
+              {/* {el.message} */}
+              <div dangerouslySetInnerHTML={{ __html: el.message }}></div>
             </Typography>
           </Stack>
         </Stack>
@@ -120,7 +161,7 @@ const ReplyMsg = ({ el, menu }) => {
         p={1.5}
         sx={{
           backgroundColor: el.incoming
-            ? theme.palette.background.default
+            ? alpha(theme.palette.background.paper, 1)
             : theme.palette.primary.main,
           borderRadius: 1.5, // 1.5 * 8 => 12 px
           width: "max-content",
@@ -133,7 +174,8 @@ const ReplyMsg = ({ el, menu }) => {
             spacing={3}
             alignItems="center"
             sx={{
-              backgroundColor: theme.palette.background.paper,
+              backgroundColor: alpha(theme.palette.background.paper, 1),
+
               borderRadius: 1,
             }}
           >
@@ -162,7 +204,7 @@ const MediaMsg = ({ el, menu }) => {
         p={1.5}
         sx={{
           backgroundColor: el.incoming
-            ? theme.palette.background.default
+            ? alpha(theme.palette.background.default, 1)
             : theme.palette.primary.main,
           borderRadius: 1.5, // 1.5 * 8 => 12 px
           width: "max-content",
@@ -195,7 +237,7 @@ const TextMsg = ({ el, menu }) => {
         p={1.5}
         sx={{
           backgroundColor: el.incoming
-            ? theme.palette.background.default
+            ? alpha(theme.palette.background.default, 1)
             : theme.palette.primary.main,
           borderRadius: 1.5, // 1.5 * 8 => 12 px
           width: "max-content",
@@ -225,45 +267,6 @@ const Timeline = ({ el }) => {
       </Typography>
       <Divider width="46%" />
     </Stack>
-  );
-};
-
-const MessageOptions = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <>
-      <DotsThreeVertical
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-        size={20}
-      />
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <Stack spacing={1} px={1}>
-          {Message_options.map((el) => (
-            <MenuItem onClick={handleClick}>{el.title}</MenuItem>
-          ))}
-        </Stack>
-      </Menu>
-    </>
   );
 };
 

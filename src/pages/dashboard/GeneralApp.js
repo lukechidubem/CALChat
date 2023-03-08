@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 import Contact from "../../components/Contact";
-import Conversation from "../../components/Conversation";
+import ChatComponent from "./Conversation";
 import Chats from "./Chats";
 import NoChat from "../../assets/Illustration/NoChat";
 import SignupImg from "../../assets/Images/logo-black.png";
@@ -45,7 +45,7 @@ const GeneralApp = () => {
         {/* <Conversation /> */}
 
         {chat_type === "individual" && room_id !== null ? (
-          <Conversation />
+          <ChatComponent />
         ) : (
           <Stack
             spacing={2}
