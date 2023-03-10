@@ -21,6 +21,7 @@ import {
 } from "../../redux/slices/conversation";
 import { socket } from "../../socket";
 import { current } from "@reduxjs/toolkit";
+// import { current } from "@reduxjs/toolkit";
 
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
@@ -33,6 +34,8 @@ const Conversation = ({ isMobile, menu }) => {
   useEffect(() => {
     const current = conversations.find((el) => el.id === room_id);
 
+    console.log(current, "current");
+
     socket.emit("get_messages", { conversation_id: current.id }, (data) => {
       // data => list of messages
       console.log(data, "List of messages");
@@ -42,7 +45,7 @@ const Conversation = ({ isMobile, menu }) => {
     });
 
     dispatch(SetCurrentConversation(current));
-  }, []);
+  }, [room_id]);
 
   return (
     <Box p={isMobile ? 1 : 3}>

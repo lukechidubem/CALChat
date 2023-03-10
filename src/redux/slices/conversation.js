@@ -90,8 +90,7 @@ const slice = createSlice({
   },
 
   setCurrentConversation(state, action) {
-    state.direct_chat.current_conversation =
-      action.payload.current_conversation;
+    state.direct_chat.current_conversation = action.payload;
   },
 
   fetchCurrentMessages(state, action) {
@@ -137,11 +136,7 @@ export const SetCurrentConversation = (current_conversation) => {
   console.log(current_conversation, "from slice");
 
   return async (dispatch, getState) => {
-    dispatch(
-      slice.actions.setCurrentConversation({
-        current_conversation: current_conversation,
-      })
-    );
+    dispatch(slice.actions.setCurrentConversation(current_conversation));
   };
 };
 
