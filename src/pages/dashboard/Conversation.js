@@ -1,6 +1,6 @@
 import { Stack, Box } from "@mui/material";
-import React, { useEffect, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
+import React, { useEffect, useRef } from "react";
 import { SimpleBarStyle } from "../../components/Scrollbar";
 
 import { ChatHeader, ChatFooter } from "../../components/Conversation";
@@ -21,7 +21,6 @@ import {
 } from "../../redux/slices/conversation";
 import { socket } from "../../socket";
 import { current } from "@reduxjs/toolkit";
-// import { current } from "@reduxjs/toolkit";
 
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
@@ -32,19 +31,20 @@ const Conversation = ({ isMobile, menu }) => {
   const { room_id } = useSelector((state) => state.chat);
 
   useEffect(() => {
-    const current = conversations.find((el) => el.id === room_id);
+    const setCC = async () => {
+      const current = await conversations.find((el) => el.id === room_id);
 
-    console.log(current, "current");
+      socket.emit("get_messages", { conversation_id: current.id }, (data) => {
+        console.log(current);
+        // data => list of messages
 
-    socket.emit("get_messages", { conversation_id: current.id }, (data) => {
-      // data => list of messages
-      console.log(data, "List of messages");
-      console.log(current, "Current");
+        dispatch(FetchCurrentMessages({ messages: data }));
+      });
 
-      dispatch(FetchCurrentMessages({ messages: data }));
-    });
+      dispatch(SetCurrentConversation(current));
+    };
 
-    dispatch(SetCurrentConversation(current));
+    setCC();
   }, [room_id]);
 
   return (

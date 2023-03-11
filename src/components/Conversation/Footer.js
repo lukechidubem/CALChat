@@ -168,8 +168,6 @@ const Footer = () => {
   //   "current_conversation"
   // );
 
-  console.log(current_conversation);
-
   const isMobile = useResponsive("between", "md", "xs", "sm");
 
   const { sidebar } = useSelector((state) => state.app);
