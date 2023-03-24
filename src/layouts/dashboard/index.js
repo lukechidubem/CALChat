@@ -46,7 +46,7 @@ const DashboardLayout = () => {
 
       socket.on("new_message", (data) => {
         const message = data.message;
-        console.log(current_conversation, data);
+        console.log(current_conversation, conversations, data);
         // check if msg we got is from currently selected conversation
         if (current_conversation.id === data.conversation_id) {
           dispatch(
@@ -119,7 +119,7 @@ const DashboardLayout = () => {
       socket?.off("start_chat");
       socket?.off("new_message");
     };
-  }, [isLoggedIn, socket]);
+  }, [isLoggedIn, socket, current_conversation]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;

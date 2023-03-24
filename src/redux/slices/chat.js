@@ -124,6 +124,7 @@ export function CreateChat(firstId, secondId) {
 
 export const SelectConversation = ({ room_id }) => {
   return async (dispatch, getState) => {
+    console.log(room_id);
     dispatch(slice.actions.selectConversation({ room_id }));
   };
 };
