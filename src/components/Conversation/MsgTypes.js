@@ -13,6 +13,8 @@ import { DotsThreeVertical, DownloadSimple, Image } from "phosphor-react";
 import { Message_options } from "../../data";
 import { Link } from "react-router-dom";
 import truncateString from "../../utils/truncate";
+import { LinkPreview } from "@dhaiwat10/react-link-preview";
+import Embed from "react-embed";
 
 const MessageOptions = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -122,7 +124,7 @@ const LinkMsg = ({ el, menu }) => {
               borderRadius: 1,
             }}
           >
-            <img
+            {/* <img
               src={el.preview}
               alt={el.message}
               style={{ maxHeight: 210, borderRadius: "10px" }}
@@ -137,15 +139,23 @@ const LinkMsg = ({ el, menu }) => {
               >
                 {truncateString("https://github.com/lukechidubem/CALChat", 16)}{" "}
               </Typography>
+            </Stack> */}
+
+            <Stack direction={"column"} spacing={2}>
+              <Embed
+                width="300px"
+                isDark
+                url={`https://github.com/lukechidubem/CALChat`}
+              />
             </Stack>
-            <Typography
-              variant="body2"
-              color={el.incoming ? theme.palette.text : "#fff"}
-            >
-              {/* {el.message} */}
-              <div dangerouslySetInnerHTML={{ __html: el.message }}></div>
-            </Typography>
           </Stack>
+          <Typography
+            variant="body2"
+            color={el.incoming ? theme.palette.text : "#fff"}
+          >
+            {/* {el.message} */}
+            <div dangerouslySetInnerHTML={{ __html: el.message }}></div>
+          </Typography>
         </Stack>
       </Box>
       {menu && <MessageOptions />}

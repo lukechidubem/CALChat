@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { SelectConversation } from "../../redux/slices/chat";
 
 import { socket, connectSocket } from "../../socket";
-import {
+import conversation, {
   AddDirectConversation,
   UpdateDirectConversation,
   AddDirectMessage,
@@ -46,7 +46,7 @@ const DashboardLayout = () => {
 
       socket.on("new_message", (data) => {
         const message = data.message;
-        console.log(current_conversation, conversations, data);
+        // console.log(current_conversation, conversations, data);
         // check if msg we got is from currently selected conversation
         if (current_conversation.id === data.conversation_id) {
           dispatch(
@@ -79,22 +79,22 @@ const DashboardLayout = () => {
         dispatch(SelectConversation({ room_id: data._id }));
       });
 
-      socket.on("open_chat", (data) => {
-        console.log(data);
-        // add / update to conversation list
-        const existing_conversation = conversations.find(
-          (el) => el.id === data._id
-        );
-        if (existing_conversation) {
-          // update direct conversation
-          dispatch(UpdateDirectConversation({ conversation: data }));
-        } else {
-          // add direct conversation
-          dispatch(AddDirectConversation({ conversation: data }));
-        }
+      // socket.on("open_chat", (data) => {
+      //   console.log(data);
+      //   // add / update to conversation list
+      //   const existing_conversation = conversations.find(
+      //     (el) => el.id === data._id
+      //   );
+      //   if (existing_conversation) {
+      //     // update direct conversation
+      //     dispatch(UpdateDirectConversation({ conversation: data }));
+      //   } else {
+      //     // add direct conversation
+      //     dispatch(AddDirectConversation({ conversation: data }));
+      //   }
 
-        dispatch(SelectConversation({ room_id: data._id }));
-      });
+      //   dispatch(SelectConversation({ room_id: data._id }));
+      // });
 
       socket.on("new_friend_request", (data) => {
         toast.success("New friend request received");
@@ -115,11 +115,11 @@ const DashboardLayout = () => {
       socket?.off("new_friend_request");
       socket?.off("request_accepted");
       socket?.off("request_sent");
-      socket?.off("open_chat");
+      // socket?.off("open_chat");
       socket?.off("start_chat");
       socket?.off("new_message");
     };
-  }, [isLoggedIn, socket, current_conversation]);
+  }, [isLoggedIn, socket, current_conversation, conversation]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;
