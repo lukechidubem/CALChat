@@ -96,7 +96,7 @@ const slice = createSlice({
               (elm) => elm._id.toString() !== user_id
             );
             return {
-              id: this_conversation._id._id,
+              id: this_conversation._id,
               user_id: user._id,
               name: user.name,
               //   name: `${user.firstName} ${user.lastName}`,
@@ -122,7 +122,7 @@ const slice = createSlice({
         (el) => el.id !== this_conversation._id
       );
       state.direct_chat.conversations.push({
-        id: this_conversation._id._id,
+        id: this_conversation._id,
         user_id: user._id,
         // name: `${user.firstName} ${user.lastName}`,
         name: user.name,
@@ -230,7 +230,7 @@ const slice = createSlice({
             }
 
             return {
-              id: this_conversation._id._id,
+              id: this_conversation._id,
               group_id: el._id,
               name: this_conversation.name,
               //   name: `${user.firstName} ${user.lastName}`,
