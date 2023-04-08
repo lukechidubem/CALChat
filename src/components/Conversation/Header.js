@@ -126,7 +126,36 @@ const ChatHeader = () => {
             direction="row"
           >
             <Box>
-              <StyledBadge
+              {chat_type === "individual" &&
+              current_conversation?.status == "Online" ? (
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  variant="dot"
+                >
+                  <Avatar
+                    alt={current_conversation?.name}
+                    src={current_conversation?.photo}
+                  />
+                </StyledBadge>
+              ) : (
+                <Avatar
+                  alt={
+                    chat_type === "individual"
+                      ? current_conversation?.name
+                      : faker.name.fullName()
+                  }
+                  src={
+                    chat_type === "individual"
+                      ? current_conversation?.photo
+                      : faker.image.avatar()
+                  }
+                />
+              )}
+              {/* <StyledBadge
                 overlap="circular"
                 anchorOrigin={{
                   vertical: "bottom",
@@ -146,7 +175,7 @@ const ChatHeader = () => {
                       : faker.image.avatar()
                   }
                 />
-              </StyledBadge>
+              </StyledBadge> */}
             </Box>
             <Stack spacing={0.2}>
               <Typography variant="subtitle2">
