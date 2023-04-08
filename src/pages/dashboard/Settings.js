@@ -19,11 +19,13 @@ import {
   Note,
   PencilCircle,
 } from "phosphor-react";
-import { faker } from "@faker-js/faker";
 import Shortcuts from "../../sections/settings/Shortcuts";
+import { useSelector } from "react-redux";
 
 const Settings = () => {
   const theme = useTheme();
+
+  const { user } = useSelector((state) => state.users);
 
   const [openShortcuts, setOpenShortcuts] = useState(false);
 
@@ -116,14 +118,12 @@ const Settings = () => {
             <Stack direction={"row"} spacing={3}>
               <Avatar
                 sx={{ width: 56, height: 56 }}
-                src={faker.image.avatar()}
-                alt={faker.name.fullName()}
+                src={user.photo}
+                alt={user.name}
               />
               <Stack spacing={0.5}>
-                <Typography variant="article">
-                  {faker.name.fullName()}
-                </Typography>
-                <Typography variant="body2">{faker.random.words()}</Typography>
+                <Typography variant="article">{user.name}</Typography>
+                <Typography variant="body2">{user.about}</Typography>
               </Stack>
             </Stack>
             {/* List of options */}

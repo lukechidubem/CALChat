@@ -12,15 +12,7 @@ const initialState = {
   // isLoggedIn: true,
   tab: 0,
 
-  // users: [], // all users of app who are not friends and not requested yet
-  // friends: [], // all friends
-  // friendRequests: [], // all friend requests
-
-  // snackbar: {
-  //   open: null,
-  //   severity: null,
-  //   message: null,
-  // },
+  show_mobile: false,
 };
 
 const slice = createSlice({
@@ -40,43 +32,14 @@ const slice = createSlice({
       state.tab = action.payload.tab;
     },
 
-    // openSnackBar(state, action) {
-    //   console.log(state.snackbar, state.sidebar);
-    //   console.log(action.payload);
-    //   state.snackbar.open = true;
-    //   state.snackbar.severity = action.payload.severity;
-    //   state.snackbar.message = action.payload.message;
-    // },
-
-    // closeSnackBar(state) {
-    //   console.log("This is getting executed");
-    //   state.snackbar.open = false;
-    //   state.snackbar.message = null;
-    // },
+    updateShowMobile(state, action) {
+      state.show_mobile = action.payload.show_mobile;
+    },
   },
 });
 
 // Reducer
 export default slice.reducer;
-
-// export const closeSnackBar = () => async (dispatch, getState) => {
-//   dispatch(slice.actions.closeSnackBar());
-// };
-
-// export const showSnackbar =
-//   ({ severity, message }) =>
-//   async (dispatch, getState) => {
-//     dispatch(
-//       slice.actions.openSnackBar({
-//         message,
-//         severity,
-//       })
-//     );
-
-//     setTimeout(() => {
-//       dispatch(slice.actions.closeSnackBar());
-//     }, 4000);
-//   };
 
 export function ToggleSidebar() {
   return async (dispatch, getState) => {
@@ -97,5 +60,11 @@ export function UpdateSidebarType(type) {
 export function UpdateTab(tab) {
   return async (dispatch, getState) => {
     dispatch(slice.actions.updateTab({ tab }));
+  };
+}
+
+export function UpdateShowMobile(data) {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.updateShowMobile(data));
   };
 }

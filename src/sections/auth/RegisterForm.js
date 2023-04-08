@@ -72,7 +72,6 @@ const RegisterForm = () => {
       // submit data to backend
       dispatch(RegisterUser(data));
     } catch (error) {
-      console.log(error);
       reset();
       setError("afterSubmit", {
         ...error,

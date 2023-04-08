@@ -67,7 +67,9 @@ const VerifyPage = Loadable(lazy(() => import("../pages/auth/Verify")));
 
 const Chats = Loadable(lazy(() => import("../pages/dashboard/Chats")));
 const CallPage = Loadable(lazy(() => import("../pages/dashboard/Call")));
-const GroupPage = Loadable(lazy(() => import("../pages/dashboard/Group")));
+const GroupPage = Loadable(
+  lazy(() => import("../pages/dashboard/GroupGeneralApp"))
+);
 
 const Settings = Loadable(lazy(() => import("../pages/dashboard/Settings")));
 const Page404 = Loadable(lazy(() => import("../pages/Page404")));

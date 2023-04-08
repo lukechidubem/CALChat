@@ -78,24 +78,17 @@ export function LoginUser(formValues) {
 
         window.localStorage.setItem("user_id", response.data.user_id);
 
-        // dispatch(
-        //   showSnackbar({
-        //     severity: "success",
-        //     message: response.data.message,
-        //   })
-        // );
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: false })
         );
       })
       .catch((error) => {
-        console.log(error);
-        // dispatch(showSnackbar({ severity: "error", message: error.message }));
-        toast.error(error.response.data.message);
-
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
         );
+        // console.log(error);
+        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        toast.error(error.response.data.message);
       });
   };
 }
@@ -124,13 +117,8 @@ export function forgotPassword(formValues) {
         }
       )
       .then((response) => {
-        console.log(response);
-        // dispatch(
-        //   showSnackbar({
-        //     severity: "success",
-        //     message: response.data.message,
-        //   })
-        // );
+        // console.log(response);
+
         toast.success("Password reset link sent to your email");
 
         dispatch(
@@ -138,8 +126,7 @@ export function forgotPassword(formValues) {
         );
       })
       .catch((error) => {
-        console.log(error);
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message);
         // dispatch(showSnackbar({ severity: "error", message: error.message }));
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
@@ -165,7 +152,6 @@ export function NewPassword(formValues, token) {
         }
       )
       .then((response) => {
-        console.log(response);
         dispatch(
           slice.actions.LoginUser({
             isLoggedIn: true,
@@ -190,8 +176,7 @@ export function NewPassword(formValues, token) {
         );
       })
       .catch((error) => {
-        console.log(error);
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message);
         // dispatch(showSnackbar({ severity: "error", message: error.message }));
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
@@ -217,35 +202,28 @@ export function RegisterUser(formValues) {
         }
       )
       .then(function (response) {
-        console.log(response);
-
         dispatch(
           slice.actions.updateRegisterEmail({ email: formValues.email })
         );
 
-        toast.success("OTP sent to your email");
+        // toast.success("OTP sent to your email");
 
-        // dispatch(
-        //   showSnackbar({
-        //     severity: "success",
-        //     message: response.data.message,
-        //   })
-        // );
+        toast.success("You have successfully registered, please login");
+
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: false })
         );
       })
       .catch(function (error) {
-        console.log(error);
-        toast.error(error.response.data.message);
-        // dispatch(showSnackbar({ severity: "error", message: error.message }));
+        toast.error(error?.response?.data?.message);
         dispatch(
           slice.actions.updateIsLoading({ error: true, isLoading: false })
         );
       })
       .finally(() => {
         if (!getState().auth.error) {
-          window.location.href = "/auth/verify";
+          window.location.href = "/auth/login";
+          // window.location.href = "/auth/verify";
           // toast.success("OTP sent to your email");
           // return <Navigate to={"/auth/verify"} />;
         }
@@ -287,12 +265,6 @@ export function VerifyEmail(formValues) {
 
         window.localStorage.setItem("user_id", response.data.user_id);
 
-        // dispatch(
-        //   showSnackbar({
-        //     severity: "success",
-        //     message: response.data.message,
-        //   })
-        // );
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: false })
         );
@@ -300,7 +272,7 @@ export function VerifyEmail(formValues) {
       .catch(function (error) {
         console.log(error);
         // dispatch(showSnackbar({ severity: "error", message: error.message }));
-        toast.error(error.response.data.message);
+        toast.error(error?.response?.data?.message);
         dispatch(
           slice.actions.updateIsLoading({ error: true, isLoading: false })
         );

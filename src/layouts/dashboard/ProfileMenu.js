@@ -1,23 +1,13 @@
 import React from "react";
-import {
-  Avatar,
-  Box,
-  Fade,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
-} from "@mui/material";
+import { Avatar, Box, Fade, Menu, MenuItem, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { faker } from "@faker-js/faker";
 
 import { Profile_Menu } from "../../data";
-import { CaretCircleRight } from "phosphor-react";
+import { useDispatch, useSelector } from "react-redux";
+
 import { LogoutUser } from "../../redux/slices/auth";
-import { useDispatch } from "react-redux";
 
 import { socket } from "../../socket";
-// import useAuthStore from "../../zustand/auth";
 
 const getPath = (index) => {
   switch (index) {
@@ -39,6 +29,8 @@ const ProfileMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.users);
 
   // const logOut = useAuthStore((state) => state.logOut);
 
@@ -65,12 +57,13 @@ const ProfileMenu = () => {
           aria-controls={openMenu ? "profile-positioned-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={openMenu ? "true" : undefined}
-          alt={faker.name.fullName()}
-          src={faker.image.avatar()}
+          alt={user.name}
+          src={user.photo}
+          onClick={handleClick}
         />
-        <IconButton onClick={handleClick}>
+        {/* <IconButton onClick={handleClick}>
           <CaretCircleRight />
-        </IconButton>
+        </IconButton> */}
         <Menu
           MenuListProps={{
             "aria-labelledby": "fade-button",

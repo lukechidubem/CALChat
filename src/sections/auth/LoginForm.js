@@ -58,7 +58,6 @@ const LoginForm = () => {
       dispatch(LoginUser(data));
       // loginUser(data);
     } catch (error) {
-      console.log(error);
       reset();
       setError("afterSubmit", {
         ...error,

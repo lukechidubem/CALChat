@@ -9,17 +9,13 @@ const initialState = {
 
   chat_type: null,
   room_id: null,
+  group_room_id: null,
 };
 
 const slice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    // LoginUser(state, action) {
-    //   state.isLoggedIn = action.payload.isLoggedIn;
-    //   state.token = action.payload.token;
-    // },
-
     getUserChats(state, action) {
       state.userChats = action.payload.userChats;
     },
@@ -29,13 +25,14 @@ const slice = createSlice({
       state.isLoading = action.payload.isLoading;
     },
 
-    // updateRegisterEmail(state, action) {
-    //   state.email = action.payload.email;
-    // },
-
     selectConversation(state, action) {
       state.chat_type = "individual";
       state.room_id = action.payload.room_id;
+    },
+
+    selectGroupConversation(state, action) {
+      state.chat_type = "group";
+      state.group_room_id = action.payload.group_room_id;
     },
   },
 });
@@ -57,8 +54,6 @@ export function GetUserChats(userId) {
         }
       )
       .then((response) => {
-        console.log(response);
-
         // toast.success("Login is successful");
 
         dispatch(
@@ -72,7 +67,6 @@ export function GetUserChats(userId) {
         );
       })
       .catch((error) => {
-        console.log(error);
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
         );
@@ -99,10 +93,6 @@ export function CreateChat(firstId, secondId) {
         }
       )
       .then((response) => {
-        console.log(response);
-
-        // toast.success("Login is successful");
-
         dispatch(
           slice.actions.getUserChats({
             userChats: response.data.chats,
@@ -114,7 +104,6 @@ export function CreateChat(firstId, secondId) {
         );
       })
       .catch((error) => {
-        console.log(error);
         dispatch(
           slice.actions.updateIsLoading({ isLoading: false, error: true })
         );
@@ -124,7 +113,12 @@ export function CreateChat(firstId, secondId) {
 
 export const SelectConversation = ({ room_id }) => {
   return async (dispatch, getState) => {
-    console.log(room_id);
     dispatch(slice.actions.selectConversation({ room_id }));
+  };
+};
+
+export const SelectGroupConversation = ({ group_room_id }) => {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.selectGroupConversation({ group_room_id }));
   };
 };

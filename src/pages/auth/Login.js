@@ -32,7 +32,7 @@ const Login = () => {
             },
           }}
         >
-          OR LOGIN WITH
+          OR LOGIN WITH (SOON)
         </Divider>
 
         <AuthSocial />

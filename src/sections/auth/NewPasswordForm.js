@@ -4,14 +4,7 @@ import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormProvider from "../../components/hook-form/FormProvider";
-import {
-  Alert,
-  Button,
-  IconButton,
-  InputAdornment,
-  Link,
-  Stack,
-} from "@mui/material";
+import { Alert, IconButton, InputAdornment, Stack } from "@mui/material";
 import { RHFTextField } from "../../components/hook-form";
 import { Eye, EyeSlash } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,7 +52,6 @@ const NewPasswordForm = () => {
       // submit data to backend
       dispatch(NewPassword(data, token));
     } catch (error) {
-      console.log(error);
       reset();
       setError("afterSubmit", {
         ...error,

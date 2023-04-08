@@ -73,6 +73,7 @@ const ChatInput = ({
   setValue,
   value,
   inputRef,
+  handleKeyDown,
 }) => {
   const [openActions, setOpenActions] = React.useState(false);
 
@@ -83,6 +84,7 @@ const ChatInput = ({
       onChange={(event) => {
         setValue(event.target.value);
       }}
+      onKeyDown={handleKeyDown}
       fullWidth
       placeholder="Write a message..."
       variant="filled"
@@ -163,6 +165,10 @@ const Footer = () => {
     (state) => state.conversation.direct_chat
   );
 
+  const { group_current_conversation } = useSelector(
+    (state) => state.conversation.group_chat
+  );
+
   const user_id = window.localStorage.getItem("user_id");
   // const current_conversation = window.localStorage.getItem(
   //   "current_conversation"
@@ -171,7 +177,9 @@ const Footer = () => {
   const isMobile = useResponsive("between", "md", "xs", "sm");
 
   const { sidebar } = useSelector((state) => state.app);
-  const { room_id } = useSelector((state) => state.chat);
+  const { room_id, group_room_id, chat_type } = useSelector(
+    (state) => state.chat
+  );
   // const { user_id } = useSelector((state) => state.auth);
 
   const [openPicker, setOpenPicker] = React.useState(false);
@@ -197,6 +205,43 @@ const Footer = () => {
       input.selectionStart = input.selectionEnd = selectionStart + 1;
     }
   }
+
+  const handleIndividualSubmit = (e) => {
+    e.preventDefault();
+
+    socket.emit("text_message", {
+      message: linkify(value),
+      conversation_id: room_id,
+      from: user_id,
+      to: current_conversation.user_id,
+      type: containsUrl(value) ? "Link" : "Text",
+    });
+
+    setValue("");
+  };
+
+  const handleGroupSubmit = (e) => {
+    e.preventDefault();
+
+    socket.emit("group_text_message", {
+      message: linkify(value),
+      conversation_id: group_room_id,
+      from: user_id,
+      to: group_current_conversation.group_id,
+      type: containsUrl(value) ? "Link" : "Text",
+    });
+    setValue("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && chat_type === "individual") {
+      return handleIndividualSubmit(e);
+    }
+
+    if (e.key === "Enter" && chat_type === "group") {
+      return handleGroupSubmit(e);
+    }
+  };
 
   return (
     <Box
@@ -243,6 +288,7 @@ const Footer = () => {
               setValue={setValue}
               openPicker={openPicker}
               setOpenPicker={setOpenPicker}
+              handleKeyDown={handleKeyDown}
             />
           </Stack>
 
@@ -260,15 +306,29 @@ const Footer = () => {
               justifyContent="center"
             >
               <IconButton
-                onClick={() => {
-                  socket.emit("text_message", {
-                    message: linkify(value),
-                    conversation_id: room_id,
-                    from: user_id,
-                    to: current_conversation.user_id,
-                    type: containsUrl(value) ? "Link" : "Text",
-                  });
-                }}
+                onClick={
+                  chat_type === "individual"
+                    ? () => {
+                        socket.emit("text_message", {
+                          message: linkify(value),
+                          conversation_id: room_id,
+                          from: user_id,
+                          to: current_conversation.user_id,
+                          type: containsUrl(value) ? "Link" : "Text",
+                        });
+                        setValue("");
+                      }
+                    : () => {
+                        socket.emit("group_text_message", {
+                          message: linkify(value),
+                          conversation_id: group_room_id,
+                          from: user_id,
+                          to: group_current_conversation.group_id,
+                          type: containsUrl(value) ? "Link" : "Text",
+                        });
+                        setValue("");
+                      }
+                }
               >
                 <PaperPlaneTilt color="#fff" />
               </IconButton>

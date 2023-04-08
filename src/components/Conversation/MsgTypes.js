@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import truncateString from "../../utils/truncate";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import Embed from "react-embed";
+import { useSelector } from "react-redux";
+import useResponsive from "../../hooks/useResponsive";
 
 const MessageOptions = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -241,24 +243,49 @@ const MediaMsg = ({ el, menu }) => {
 
 const TextMsg = ({ el, menu }) => {
   const theme = useTheme();
+  const { chat_type } = useSelector((state) => state.chat);
+  const isDesktop = useResponsive("up", "md");
+
   return (
-    <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
+    <Stack direction="row" justifyContent={el.outgoing ? "end" : "start"}>
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.incoming
-            ? alpha(theme.palette.background.default, 1)
-            : theme.palette.primary.main,
+          backgroundColor: el.outgoing
+            ? theme.palette.primary.main
+            : alpha(theme.palette.background.default, 1),
           borderRadius: 1.5, // 1.5 * 8 => 12 px
           width: "max-content",
+          maxWidth: !isDesktop ? "18rem" : "50%",
         }}
       >
-        <Typography
-          variant="body2"
-          color={el.incoming ? theme.palette.text : "#fff"}
-        >
-          {el.message}
-        </Typography>
+        {chat_type === "group" ? (
+          <Box
+            color={el.outgoing ? "#fff" : theme.palette.text}
+            sx={{ maxWidth: !isDesktop ? "18rem" : "100%", flexWrap: "wrap" }}
+          >
+            <Typography
+              variant="body2"
+              // color={el.outgoing ? "#fff" : theme.palette.text}
+            >
+              {el.sender}
+            </Typography>
+            <Typography
+              variant="body2"
+              //  color={el.outgoing ? "#fff" : theme.palette.text}
+            >
+              {el.message}
+            </Typography>
+          </Box>
+        ) : (
+          <Typography
+            variant="body2"
+            color={el.outgoing ? "#fff" : theme.palette.text}
+            sx={{ maxWidth: !isDesktop ? "15rem" : "100%", flexWrap: "wrap" }}
+          >
+            {el.message}
+          </Typography>
+        )}
       </Box>
       {/*  */}
       {menu && <MessageOptions />}

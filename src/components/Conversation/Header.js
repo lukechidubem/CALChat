@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Avatar,
   Badge,
@@ -15,11 +15,11 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { CaretDown, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
 import { faker } from "@faker-js/faker";
-import { useSearchParams } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import { ToggleSidebar } from "../../redux/slices/app";
-import { useDispatch } from "react-redux";
-import CallDialog from "../../sections/main/CallDialog";
+import { useDispatch, useSelector } from "react-redux";
+import { StartAudioCall } from "../../redux/slices/audioCall";
+import { StartVideoCall } from "../../redux/slices/videoCall";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -70,7 +70,17 @@ const ChatHeader = () => {
   const isMobile = useResponsive("between", "md", "xs", "sm");
   const theme = useTheme();
 
-  const [openVoiceDialog, setOpenVoiceDialog] = useState(false);
+  const { current_conversation } = useSelector(
+    (state) => state.conversation.direct_chat
+  );
+
+  const { chat_type } = useSelector((state) => state.chat);
+
+  const { group_current_conversation } = useSelector(
+    (state) => state.conversation.group_chat
+  );
+
+  // const [openVoiceDialog, setOpenVoiceDialog] = useState(false);
 
   const [conversationMenuAnchorEl, setConversationMenuAnchorEl] =
     React.useState(null);
@@ -85,13 +95,9 @@ const ChatHeader = () => {
     setConversationMenuAnchorEl(null);
   };
 
-  const handleOpenVoiceDialog = () => {
-    setOpenVoiceDialog(true);
-  };
-
-  const handleCloseVoiceDialog = () => {
-    setOpenVoiceDialog(false);
-  };
+  // const handleCloseVoiceDialog = () => {
+  //   setOpenVoiceDialog(false);
+  // };
 
   return (
     <>
@@ -129,16 +135,31 @@ const ChatHeader = () => {
                 variant="dot"
               >
                 <Avatar
-                  alt={faker.name.fullName()}
-                  src={faker.image.avatar()}
+                  alt={
+                    chat_type === "individual"
+                      ? current_conversation?.name
+                      : faker.name.fullName()
+                  }
+                  src={
+                    chat_type === "individual"
+                      ? current_conversation?.photo
+                      : faker.image.avatar()
+                  }
                 />
               </StyledBadge>
             </Box>
             <Stack spacing={0.2}>
               <Typography variant="subtitle2">
-                {faker.name.fullName()}
+                {/* {faker.name.fullName()} */}
+                {chat_type === "individual"
+                  ? current_conversation?.name
+                  : group_current_conversation?.name}
               </Typography>
-              <Typography variant="caption">Online</Typography>
+              <Typography variant="caption">
+                {chat_type === "individual"
+                  ? current_conversation?.status
+                  : "group chat"}
+              </Typography>
             </Stack>
           </Stack>
           <Stack
@@ -146,13 +167,16 @@ const ChatHeader = () => {
             alignItems="center"
             spacing={isMobile ? 1 : 3}
           >
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                dispatch(StartVideoCall(current_conversation.user_id));
+              }}
+            >
               <VideoCamera />
             </IconButton>
             <IconButton
               onClick={() => {
-                // open call Dialog Box
-                handleOpenVoiceDialog();
+                dispatch(StartAudioCall(current_conversation.user_id));
               }}
             >
               <Phone />
@@ -217,12 +241,12 @@ const ChatHeader = () => {
         </Stack>
       </Box>
 
-      {openVoiceDialog && (
+      {/* {open_audio_dialog && (
         <CallDialog
-          open={openVoiceDialog}
-          handleClose={handleCloseVoiceDialog}
+          open={open_audio_dialog}
+          handleClose={handleCloseAudioDialog}
         />
-      )}
+      )} */}
     </>
   );
 };

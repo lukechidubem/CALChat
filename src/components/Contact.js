@@ -26,7 +26,7 @@ import {
   VideoCamera,
   X,
 } from "phosphor-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ToggleSidebar, UpdateSidebarType } from "../redux/slices/app";
 import AntSwitch from "./AntSwitch";
 
@@ -86,6 +86,20 @@ const Contact = () => {
   const [openBlock, setOpenBlock] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
+  const { current_messages } = useSelector(
+    (state) => state.conversation.direct_chat
+  );
+
+  const { current_conversation } = useSelector(
+    (state) => state.conversation.direct_chat
+  );
+
+  const { chat_type } = useSelector((state) => state.chat);
+
+  const { group_current_conversation } = useSelector(
+    (state) => state.conversation.group_chat
+  );
+
   const handleCloseBlock = () => {
     setOpenBlock(false);
   };
@@ -139,16 +153,26 @@ const Contact = () => {
         >
           <Stack alignItems={"center"} direction="row" spacing={2}>
             <Avatar
-              src={faker.image.avatar()}
-              alt={faker.name.firstName()}
+              src={
+                chat_type === "individual"
+                  ? current_conversation.photo
+                  : faker.image.avatar()
+              }
+              alt={
+                chat_type === "individual"
+                  ? current_conversation.name
+                  : group_current_conversation.name
+              }
               sx={{ height: 64, width: 64 }}
             />
             <Stack spacing={0.5}>
               <Typography variant="article" fontWeight={600}>
-                {faker.name.fullName()}
+                {chat_type === "individual"
+                  ? current_conversation.name
+                  : group_current_conversation.name}
               </Typography>
               <Typography variant="body2" fontWeight={500}>
-                {"+2348036000000"}
+                {"+2348000000000"}
               </Typography>
             </Stack>
           </Stack>
@@ -175,7 +199,11 @@ const Contact = () => {
           <Divider />
           <Stack spacing={0.5}>
             <Typography variant="article">About</Typography>
-            <Typography variant="body2">You can't argue with succes</Typography>
+            <Typography variant="body2">
+              {chat_type === "individual"
+                ? current_conversation.about
+                : "Group conversation"}
+            </Typography>
           </Stack>
           <Divider />
 
@@ -241,7 +269,7 @@ const Contact = () => {
             <Stack spacing={0.5}>
               <Typography variant="subtitle2">Lets Code It</Typography>
               <Typography variant="caption">
-                Omalicham, Dubem, Obim, You
+                Omalicham, Dubem, Luke, You
               </Typography>
             </Stack>
           </Stack>

@@ -5,6 +5,8 @@ import authReducer from "./slices/auth";
 import chatReducer from "./slices/chat";
 import userReducer from "./slices/users";
 import conversationReducer from "./slices/conversation";
+import audioCallReducer from "./slices/audioCall";
+import videoCallReducer from "./slices/videoCall";
 
 // slices
 
@@ -22,6 +24,8 @@ const rootReducer = combineReducers({
   chat: chatReducer,
   users: userReducer,
   conversation: conversationReducer,
+  audioCall: audioCallReducer,
+  videoCall: videoCallReducer,
 });
 
 export { rootPeristConfig, rootReducer };

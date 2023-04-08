@@ -14,6 +14,9 @@ import {
   VideoCamera,
   Phone,
 } from "phosphor-react";
+import { useDispatch } from "react-redux";
+import { StartAudioCall } from "../redux/slices/audioCall";
+import { StartVideoCall } from "../redux/slices/videoCall";
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
   "&:hover": {
@@ -104,8 +107,9 @@ const CallLogElement = ({ img, name, incoming, missed, online, id }) => {
   );
 };
 
-const CallElement = ({ img, name, incoming, missed, online, id }) => {
+const CallElement = ({ img, name, online, id, handleClose }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   return (
     <StyledChatBox
@@ -141,11 +145,21 @@ const CallElement = ({ img, name, incoming, missed, online, id }) => {
           </Stack>
         </Stack>
         <Stack direction={"row"} spacing={2} alignItems={"center"}>
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              dispatch(StartAudioCall(id));
+              handleClose();
+            }}
+          >
             <Phone style={{ color: theme.palette.primary.main }} />
           </IconButton>
 
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              dispatch(StartVideoCall(id));
+              handleClose();
+            }}
+          >
             <VideoCamera style={{ color: theme.palette.primary.main }} />
           </IconButton>
         </Stack>

@@ -5,6 +5,7 @@ import { SimpleBarStyle } from "../../components/Scrollbar";
 
 import { ChatHeader, ChatFooter } from "../../components/Conversation";
 import useResponsive from "../../hooks/useResponsive";
+import { Chat_History } from "../../data";
 import {
   DocMsg,
   LinkMsg,
@@ -15,40 +16,55 @@ import {
 } from "../../components/Conversation/MsgTypes";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  FetchCurrentGroupMessages,
   FetchCurrentMessages,
   SetCurrentConversation,
+  SetCurrentGroupConversation,
 } from "../../redux/slices/conversation";
 import { socket } from "../../socket";
 
-const Conversation = ({ isMobile, menu }) => {
+const GroupConversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
 
-  const { conversations, current_messages } = useSelector(
-    (state) => state.conversation.direct_chat
+  //   const { conversations, current_messages } = useSelector(
+  //     (state) => state.conversation.direct_chat
+  //   );
+
+  const { group_conversations, group_current_messages } = useSelector(
+    (state) => state.conversation.group_chat
   );
-  const { room_id } = useSelector((state) => state.chat);
+  const { group_room_id } = useSelector((state) => state.chat);
+
+  console.log("socket", socket.id);
 
   useEffect(() => {
     const setCC = async () => {
-      const current = await conversations.find((el) => el.id === room_id);
+      const current = await group_conversations.find(
+        (el) => el.id === group_room_id
+      );
 
-      socket.emit("get_messages", { conversation_id: current.id }, (data) => {
-        console.log(current);
-        // data => list of messages
+      console.log("from group_conversations", current);
+      socket.emit(
+        "get_group_messages",
+        { conversation_id: current.id },
+        (data) => {
+          console.log(current);
+          // data => list of messages
 
-        dispatch(FetchCurrentMessages({ messages: data }));
-      });
+          dispatch(FetchCurrentGroupMessages({ messages: data }));
+        }
+      );
 
-      dispatch(SetCurrentConversation(current));
+      dispatch(SetCurrentGroupConversation(current));
     };
 
     setCC();
-  }, [room_id]);
+  }, [group_room_id]);
 
   return (
     <Box p={isMobile ? 1 : 3}>
       <Stack spacing={3}>
-        {current_messages.map((el, idx) => {
+        {group_current_messages.map((el, idx) => {
           switch (el.type) {
             case "divider":
               return (
@@ -97,20 +113,22 @@ const Conversation = ({ isMobile, menu }) => {
   );
 };
 
-const ChatComponent = () => {
+const GroupComponent = () => {
   const isMobile = useResponsive("between", "md", "xs", "sm");
   const theme = useTheme();
 
   const messageListRef = useRef(null);
 
-  const { current_messages } = useSelector(
-    (state) => state.conversation.direct_chat
+  const { group_current_messages } = useSelector(
+    (state) => state.conversation.group_chat
   );
+
+  console.log("group_current_messages", group_current_messages);
 
   useEffect(() => {
     // Scroll to the bottom of the message list when new messages are added
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-  }, [current_messages]);
+  }, [group_current_messages]);
 
   return (
     <Stack height={"100%"} maxHeight={"100vh"} width={"auto"}>
@@ -119,7 +137,7 @@ const ChatComponent = () => {
       <Box
         className="scrollHide"
         ref={messageListRef}
-        width={"100%"}
+        // width={"100%"}
         sx={{
           position: "relative",
           flexGrow: 1,
@@ -134,7 +152,7 @@ const ChatComponent = () => {
         }}
       >
         <SimpleBarStyle timeout={500} clickOnTrack={false}>
-          <Conversation menu={true} isMobile={isMobile} />
+          <GroupConversation menu={true} isMobile={isMobile} />
         </SimpleBarStyle>
       </Box>
 
@@ -144,6 +162,6 @@ const ChatComponent = () => {
   );
 };
 
-export default ChatComponent;
+export default GroupComponent;
 
-export { Conversation };
+export { GroupConversation };

@@ -51,7 +51,7 @@ const Register = () => {
             },
           }}
         >
-          OR REGISTER WITH
+          OR REGISTER WITH (SOON)
         </Divider>
         <AuthSocial />
       </Stack>

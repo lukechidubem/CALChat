@@ -18,78 +18,74 @@ import { CallElement } from "../../components/CallElement";
 import { CallList } from "../../data";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  FetchUsers,
-  FetchFriendRequests,
-  FetchFriends,
+  FetchGroups,
+  FetchUserGroups,
+  FetchUserOwnGroups,
 } from "../../redux/slices/users";
 import { GetUsers } from "../../redux/slices/users";
 
-import {
-  FriendElement,
-  FriendRequestElement,
-  UserElement,
-} from "../../components/UserElement";
+import { GroupElement, UserGroupElement } from "../../components/GroupElement";
 import useResponsive from "../../hooks/useResponsive";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const UsersList = () => {
+const GroupList = ({ handleClose }) => {
   const dispatch = useDispatch();
 
-  const { users } = useSelector((state) => state.users);
+  const { all_group_chats } = useSelector((state) => state.users);
 
   useEffect(() => {
-    dispatch(FetchUsers());
+    dispatch(FetchGroups());
   }, []);
 
   return (
     <>
-      {users.map((el, idx) => {
-        return <UserElement key={idx} {...el} />;
+      {all_group_chats.map((el, idx) => {
+        return <GroupElement key={idx} {...el} handleClose={handleClose} />;
       })}
     </>
   );
 };
 
-const FriendsList = ({ handleClose }) => {
+const UserGroupList = ({ handleClose }) => {
   const dispatch = useDispatch();
 
-  const { friends } = useSelector((state) => state.users);
+  const { user_group_chats } = useSelector((state) => state.users);
 
   useEffect(() => {
-    dispatch(FetchFriends());
+    dispatch(FetchUserGroups());
   }, []);
 
   return (
     <>
-      {friends.map((el, idx) => {
-        return <FriendElement key={idx} {...el} handleClose={handleClose} />;
+      {user_group_chats.map((el, idx) => {
+        return <UserGroupElement key={idx} {...el} handleClose={handleClose} />;
       })}
     </>
   );
 };
 
-const RequestsList = () => {
+const UserOwnGroupList = ({ handleClose }) => {
   const dispatch = useDispatch();
 
-  const { friendRequests } = useSelector((state) => state.users);
+  const { user_own_group_chats } = useSelector((state) => state.users);
 
   useEffect(() => {
-    dispatch(FetchFriendRequests());
+    dispatch(FetchUserOwnGroups());
   }, []);
 
   return (
     <>
-      {friendRequests.map((el, idx) => {
-        return <FriendRequestElement key={idx} {...el.sender} id={el._id} />;
+      {user_own_group_chats.map((el, idx) => {
+        return <UserGroupElement key={idx} {...el} handleClose={handleClose} />;
       })}
     </>
   );
 };
 
-const Friends = ({ open, handleClose }) => {
+const Groups = ({ open, handleClose }) => {
   const [value, setValue] = React.useState(0);
 
   const isDesktop = useResponsive("up", "md");
@@ -97,16 +93,6 @@ const Friends = ({ open, handleClose }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  // useEffect(() => {
-  //   dispatch(FetchUsers());
-  //   // dispatch(GetUsers());
-  // }, []);
-
-  // const { users } = useSelector((state) => state.app);
-  //   const {users} = useSelector((state) => state.users);
-
-  // console.log(users);
 
   return (
     <Dialog
@@ -120,20 +106,11 @@ const Friends = ({ open, handleClose }) => {
       sx={{ p: isDesktop ? 4 : 2 }}
     >
       {/* <DialogTitle>{"Friends"}</DialogTitle> */}
-      <Stack p={2} sx={{ width: "100%" }}>
-        {/* <Search>
-          <SearchIconWrapper>
-            <MagnifyingGlass color="#709CE6" />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search> */}
+      <Stack p={isDesktop ? 2 : 1} sx={{ width: "100%" }}>
         <Tabs value={value} onChange={handleChange} centered>
-          <Tab label="Explore" />
-          <Tab label="Friends" />
-          <Tab label="Requests" />
+          <Tab label="Explore Groups" />
+          <Tab label="User Groups" />
+          <Tab label="Own Groups" />
         </Tabs>
       </Stack>
       <DialogContent>
@@ -142,13 +119,13 @@ const Friends = ({ open, handleClose }) => {
             {(() => {
               switch (value) {
                 case 0:
-                  return <UsersList />;
+                  return <GroupList handleClose={handleClose} />;
 
                 case 1:
-                  return <FriendsList handleClose={handleClose} />;
+                  return <UserGroupList handleClose={handleClose} />;
 
                 case 2:
-                  return <RequestsList />;
+                  return <UserOwnGroupList handleClose={handleClose} />;
 
                 default:
                   break;
@@ -161,4 +138,4 @@ const Friends = ({ open, handleClose }) => {
   );
 };
 
-export default Friends;
+export default Groups;

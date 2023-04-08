@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Avatar,
   Button,
@@ -12,43 +12,63 @@ import {
 import { faker } from "@faker-js/faker";
 
 import { ZegoExpressEngine } from "zego-express-engine-webrtc";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import axiosInstance from "../../utils/axios";
+import axiosInstance from "../../../utils/axios";
+
+import { socket } from "../../../socket";
+import { ResetAudioCallQueue } from "../../../redux/slices/audioCall";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const CallDialog = ({ open, handleClose }) => {
-  const { direct_chat } = useSelector((state) => state.conversation);
-  const { token, user_id } = useSelector((state) => state.auth);
+const AudioCallDialog = ({ open, handleClose }) => {
+  const dispatch = useDispatch();
 
-  const { current_conversation } = direct_chat;
+  const audioStreamRef = useRef(null);
 
-  const appID = 1642584767;
-  const server = "wss://webliveroom1642584767-api.coolzcloud.com/ws";
+  const [call_details] = useSelector((state) => state.audioCall.call_queue);
+  const { incoming } = useSelector((state) => state.audioCall);
+
+  const { token } = useSelector((state) => state.auth);
+
+  const appID = 524899937;
+  const server = "wss://webliveroom524899937-api.coolzcloud.com/ws";
 
   // roomID => ID of conversation => current_conversation.id
   // token => generate on backend & get on App
   // userID => ID of this user
   // userName => slug formed by user's name
 
-  const roomID = current_conversation.id;
-  const userID = user_id;
-  const userName = user_id;
+  const roomID = call_details?.roomID;
+  const userID = call_details?.userID;
+  const userName = call_details?.userName;
 
   // Step 1
 
   // Initialize the ZegoExpressEngine instance
   const zg = new ZegoExpressEngine(appID, server);
 
-  const streamID = current_conversation.user_id;
+  const streamID = call_details?.streamID;
 
   const handleDisconnect = (event, reason) => {
     if (reason && reason === "backdropClick") {
       return;
     } else {
+      dispatch(ResetAudioCallQueue());
+
+      // clean up event listners
+      socket?.off("call_accepted");
+      socket?.off("call_denied");
+      socket?.off("call_missed");
+
+      // stop publishing local audio stream to remote users, call the stopPublishingStream method with the corresponding stream ID passed to the streamID parameter.
+      zg.stopPublishingStream(streamID);
+      // stop playing a remote audio
+      zg.stopPlayingStream(userID);
+      // log out of the room
+      zg.logoutRoom(roomID);
       // handle Call Disconnection => this will be handled as cleanup when this dialog unmounts
 
       // at the end call handleClose Dialog
@@ -57,7 +77,53 @@ const CallDialog = ({ open, handleClose }) => {
   };
 
   useEffect(() => {
-    let localStream;
+    // TODO => emit audio_call event
+
+    // create a job to decline call automatically after 30 sec if not picked
+
+    const timer = setTimeout(() => {
+      // TODO => You can play an audio indicating missed call at this line at sender's end
+
+      socket.emit(
+        "audio_call_not_picked",
+        { to: streamID, from: userID },
+        () => {
+          // TODO abort call => Call verdict will be marked as Missed
+        }
+      );
+    }, 30 * 1000);
+
+    socket.on("audio_call_missed", () => {
+      // TODO => You can play an audio indicating call is missed at receiver's end
+      // Abort call
+      handleDisconnect();
+    });
+
+    socket.on("audio_call_accepted", () => {
+      // TODO => You can play an audio indicating call is started
+      // clear timeout for "audio_call_not_picked"
+      clearTimeout(timer);
+    });
+
+    if (!incoming) {
+      socket.emit("start_audio_call", {
+        to: streamID,
+        from: userID,
+        roomID,
+      });
+    }
+
+    socket.on("audio_call_denied", () => {
+      // TODO => You can play an audio indicating call is denined
+      // ABORT CALL
+      handleDisconnect();
+    });
+
+    // socket.emit("start_audio_call", {
+    //   to: current_conversation.user_id,
+    //   from: userID,
+    //   roomID,
+    // });
 
     // make a POST API call to server & fetch token
 
@@ -66,7 +132,7 @@ const CallDialog = ({ open, handleClose }) => {
     async function fetchToken() {
       // You can await here
       const response = await axiosInstance.post(
-        "/user/generate-zego-token",
+        "/api/users/generate-zego-token",
         {
           userId: userID,
           room_id: roomID,
@@ -114,9 +180,11 @@ const CallDialog = ({ open, handleClose }) => {
               console.log(result);
 
               // After calling the CreateStream method, you need to wait for the ZEGOCLOUD server to return the local stream object before any further operation.
-              localStream = await zg.createStream({
+              const localStream = await zg.createStream({
                 camera: { audio: true, video: false },
               });
+
+              audioStreamRef.current = localStream;
 
               // Get the audio tag.
               const localAudio = document.getElementById("local-audio");
@@ -170,16 +238,21 @@ const CallDialog = ({ open, handleClose }) => {
               } `,
               JSON.stringify(userList)
             );
-            // const current_users = JSON.stringify(userList);
-            // * We can use current_users_list to build dynamic UI in a group call
-            const remoteStream = await zg.startPlayingStream(userID);
 
-            // Get the audio tag.
-            const remoteAudio = document.getElementById("remote-audio");
-            // The local stream is a MediaStream object. You can render audio by assigning the local stream to the srcObject property of video or audio.
+            if (updateType !== "ADD") {
+              handleDisconnect();
+            } else {
+              // const current_users = JSON.stringify(userList);
+              // * We can use current_users_list to build dynamic UI in a group call
+              const remoteStream = await zg.startPlayingStream(userID);
 
-            remoteAudio.srcObject = remoteStream;
-            remoteAudio.play();
+              // Get the audio tag.
+              const remoteAudio = document.getElementById("remote-audio");
+              // The local stream is a MediaStream object. You can render audio by assigning the local stream to the srcObject property of video or audio.
+
+              remoteAudio.srcObject = remoteStream;
+              remoteAudio.play();
+            }
           });
 
           // Callback for updates on the status of the streams in the room.
@@ -227,17 +300,6 @@ const CallDialog = ({ open, handleClose }) => {
       .catch((err) => {
         console.log(err);
       });
-
-    return () => {
-      // stop publishing local audio stream to remote users, call the stopPublishingStream method with the corresponding stream ID passed to the streamID parameter.
-      zg.stopPublishingStream(streamID);
-      // destroy local audio stream object created when calling the createStream method.
-      zg.destroyStream(localStream);
-      // stop playing a remote audio
-      zg.stopPlayingStream(userID);
-      // log out of the room
-      zg.logoutRoom(roomID);
-    };
   }, []);
 
   return (
@@ -268,7 +330,7 @@ const CallDialog = ({ open, handleClose }) => {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} variant="contained" color="error">
+          <Button onClick={handleDisconnect} variant="contained" color="error">
             End Call
           </Button>
         </DialogActions>
@@ -277,4 +339,4 @@ const CallDialog = ({ open, handleClose }) => {
   );
 };
 
-export default CallDialog;
+export default AudioCallDialog;

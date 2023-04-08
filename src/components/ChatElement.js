@@ -5,6 +5,7 @@ import { styled, useTheme, alpha } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import useFetchRecipientUser from "../hooks/useFetchRecipient";
 import { SelectConversation } from "../redux/slices/chat";
+import useResponsive from "../hooks/useResponsive";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -45,35 +46,53 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const ChatElement = ({ id, name, photo, msg, time, unread, online }) => {
+const ChatElement = ({
+  id,
+  name,
+  photo,
+  msg,
+  lastMessage,
+  time,
+  unread,
+  online,
+  handleClick,
+}) => {
   const theme = useTheme();
 
   const dispatch = useDispatch();
-  const { room_id } = useSelector((state) => state.chat);
+  const { room_id, group_room_id } = useSelector((state) => state.chat);
+  const isDesktop = useResponsive("up", "md");
+  const isMobile = useResponsive("between", "md", "xs", "sm");
 
   const selectedChatId = room_id?.toString();
+  const selectedGroupId = group_room_id?.toString();
 
   let isSelected = selectedChatId === id;
+
+  let isSelectedGroup = selectedGroupId === id;
 
   if (!selectedChatId) {
     isSelected = false;
   }
 
+  if (!selectedGroupId) {
+    isSelectedGroup = false;
+  }
+
   return (
     <StyledChatBox
-      onClick={() => {
-        dispatch(SelectConversation({ room_id: id }));
-      }}
+      onClick={() => handleClick(id)}
       sx={{
-        width: "100%",
+        width: isDesktop ? "100%" : "auto",
 
-        backgroundColor: isSelected
-          ? theme.palette.mode === "light"
-            ? alpha(theme.palette.primary.main, 0.5)
-            : theme.palette.primary.main
-          : theme.palette.mode === "light"
-          ? "#fff"
-          : theme.palette.background.default,
+        backgroundColor:
+          isSelected || isSelectedGroup
+            ? theme.palette.mode === "light"
+              ? alpha(theme.palette.primary.main, 0.5)
+              : theme.palette.primary.main
+            : theme.palette.mode === "light"
+            ? "#fff"
+            : theme.palette.background.default,
       }}
       p={2}
     >
@@ -118,7 +137,6 @@ const ChatElement = ({ id, name, photo, msg, time, unread, online }) => {
 export default ChatElement;
 
 export const ChatElement2 = ({ chat, user }) => {
-  // console.log(chat);
   // console.log("user", user);
 
   const { recipientUser } = useFetchRecipientUser(chat, user);

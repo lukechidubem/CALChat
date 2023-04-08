@@ -6,39 +6,58 @@ import {
   Typography,
   Divider,
   Button,
+  Badge,
 } from "@mui/material";
-import {
-  ArchiveBox,
-  CircleDashed,
-  MagnifyingGlass,
-  Users,
-} from "phosphor-react";
-import { useTheme } from "@mui/material/styles";
-// import { faker } from "@faker-js/faker";
-import { ChatList } from "../../data";
-import useResponsive from "../../hooks/useResponsive";
-import BottomNav from "../../layouts/dashboard/BottomNav";
+import { ArchiveBox, CircleDashed, MagnifyingGlass } from "phosphor-react";
+import { useTheme, styled } from "@mui/material/styles";
+
 import { SimpleBarStyle } from "../../components/Scrollbar";
 
-// import SimpleBar from "simplebar-react";
 import {
   Search,
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
-import ChatElement, {
-  ChatElement2,
-  UsersChatElement,
-} from "../../components/ChatElement";
+import ChatElement from "../../components/ChatElement";
 import { useDispatch, useSelector } from "react-redux";
-import { GetUserChats } from "../../redux/slices/chat";
-import { CreateChat } from "../../redux/slices/chat";
-import { GetUsers } from "../../redux/slices/users";
+import { SelectConversation } from "../../redux/slices/chat";
+
 import Friends from "../../sections/main/Friends";
 import { socket } from "../../socket";
 import { FetchDirectConversations } from "../../redux/slices/conversation";
+import { UpdateShowMobile } from "../../redux/slices/app";
+import { v4 as uuidv4 } from "uuid";
 
 const user_id = window.localStorage.getItem("user_id");
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}));
 
 function Chats() {
   const theme = useTheme();
@@ -48,22 +67,15 @@ function Chats() {
   const { conversations } = useSelector(
     (state) => state.conversation.direct_chat
   );
+  const { show_mobile } = useSelector((store) => store.app);
 
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  const { user } = useSelector((state) => state.auth);
-  const { userChats } = useSelector((state) => state.chat);
-  // const { userChats } = useSelector((state) => state.chat);
-  const { users, friends } = useSelector((state) => state.users);
-  const [potentialChats, setPotentialChats] = useState([]);
-  const [showPotentialChats, setShowPotentialChats] = useState(false);
-
-  const isDesktop = useResponsive("up", "md");
+  const { friendRequests } = useSelector((state) => state.users);
 
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     socket.emit("get_direct_conversations", { user_id }, (data) => {
-      console.log(data); // this data is the list of conversations
+      // this data is the list of conversations
       // dispatch action
 
       dispatch(FetchDirectConversations({ conversations: data }));
@@ -77,47 +89,18 @@ function Chats() {
     setOpenDialog(true);
   };
 
-  useEffect(() => {
-    if (user) {
-      dispatch(GetUserChats(user._id));
-    }
-  }, [user]);
+  const handleClickChatElement = (id) => {
+    dispatch(SelectConversation({ room_id: id }));
+    dispatch(UpdateShowMobile({ show_mobile: true }));
+  };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(GetUsers());
-    }
-
-    if (!users) return;
-
-    const privateChats = users.filter((u) => {
-      let isChatCreated = false;
-      if (user._id === u._id) return false;
-
-      if (userChats) {
-        isChatCreated = userChats?.some((chat) => {
-          return chat.members[0] === u._id || chat.members[1] === u._id;
-        });
-      }
-
-      return !isChatCreated;
-    });
-
-    setPotentialChats(privateChats);
-  }, [userChats]);
-
-  // const onStartChat = ()=>{
-
-  // }
-
-  // console.log("pChats", potentialChats);
   return (
     <>
       <Box
         sx={{
           position: "relative",
 
-          width: 320,
+          width: show_mobile ? "auto" : 320,
           backgroundColor:
             theme.palette.mode === "light"
               ? "#F8FAFF"
@@ -125,24 +108,17 @@ function Chats() {
           boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
         }}
       >
-        {!isDesktop && (
-          // Bottom Nav
-          <BottomNav />
-        )}
-
         <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
           <Stack
             direction="row"
             alignItems={"center"}
             justifyContent="space-between"
           >
-            <Button onClick={() => setShowPotentialChats(false)} variant="h5">
-              Chats
-            </Button>
+            <Button variant="h5">Chats</Button>
 
-            <Button onClick={() => setShowPotentialChats(true)}>
+            {/* <Button onClick={() => setShowPotentialChats(true)}>
               New Chats
-            </Button>
+            </Button> */}
 
             <Stack direction={"row"} alignItems="center" spacing={1}>
               <IconButton
@@ -151,7 +127,17 @@ function Chats() {
                 }}
                 sx={{ width: "max-content" }}
               >
-                <Users />
+                {friendRequests.length > 0 ? (
+                  <StyledBadge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    variant="dot"
+                  >
+                    New Chats
+                  </StyledBadge>
+                ) : (
+                  <Typography> New Chats</Typography>
+                )}
               </IconButton>
               <IconButton sx={{ width: "max-content" }}>
                 <CircleDashed />
@@ -188,43 +174,22 @@ function Chats() {
             }}
           >
             <SimpleBarStyle timeout={500} clickOnTrack={false}>
-              {!showPotentialChats ? (
-                <Stack spacing={2.4}>
-                  {/* <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                    Pinned
-                  </Typography>
-                  {ChatList.filter((el) => el.pinned).map((el) => {
-                    return <ChatElement {...el} />;
-                  })} */}
-                  <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                    All Chats
-                  </Typography>
-                  {conversations
-                    .filter((el) => !el.pinned)
-                    .map((el, idx) => {
-                      return <ChatElement {...el} />;
-                    })}
-
-                  {/* <Typography variant="subtitle2" sx={{ color: "#676767" }}>
-                    Testing
-                  </Typography>
-                  {userChats &&
-                    userChats.map((chat, index) => {
-                      return (
-                        <ChatElement2 chat={chat} user={user} key={index} />
-                      );
-                    })} */}
-                </Stack>
-              ) : (
-                <Stack spacing={2.4}>
-                  {friends &&
-                    // potentialChats.map((el, index) => {
-                    friends.map((el, index) => {
-                      return <ChatElement {...el} />;
-                    })}
-                </Stack>
-              )}
-              {/* </SimpleBar> */}
+              <Stack spacing={2.4}>
+                <Typography variant="subtitle2" sx={{ color: "#676767" }}>
+                  All Chats
+                </Typography>
+                {conversations
+                  .filter((el) => !el.pinned)
+                  .map((el, idx) => {
+                    return (
+                      <ChatElement
+                        {...el}
+                        key={idx}
+                        handleClick={handleClickChatElement}
+                      />
+                    );
+                  })}
+              </Stack>
             </SimpleBarStyle>
           </Stack>
         </Stack>

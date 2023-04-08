@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,12 +14,30 @@ import {
 import { MagnifyingGlass } from "phosphor-react";
 import { CallElement } from "../../components/CallElement";
 import { CallList } from "../../data";
+import { useDispatch, useSelector } from "react-redux";
+import { FetchAllUsers } from "../../redux/slices/users";
+import { faker } from "@faker-js/faker";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const StartCall = ({ open, handleClose }) => {
+  const { all_users } = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(FetchAllUsers());
+  }, []);
+
+  // console.log(CallList, all_users, "Call List Info");
+
+  const list = all_users.map((el) => ({
+    id: el._id,
+    // name: `${el.firstName} ${el.lastName}`,
+    name: el.name,
+    image: faker.image.avatar(),
+  }));
+
   return (
     <Dialog
       fullWidth
@@ -33,7 +51,7 @@ const StartCall = ({ open, handleClose }) => {
     >
       <DialogTitle>{"Start New Conversation"}</DialogTitle>
       <Stack p={2} sx={{ width: "100%" }}>
-        <Search>
+        {/* <Search>
           <SearchIconWrapper>
             <MagnifyingGlass color="#709CE6" />
           </SearchIconWrapper>
@@ -41,7 +59,7 @@ const StartCall = ({ open, handleClose }) => {
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
           />
-        </Search>
+        </Search> */}
       </Stack>
       <DialogContent
         className="scrollHide"
@@ -49,8 +67,10 @@ const StartCall = ({ open, handleClose }) => {
       >
         <Stack sx={{ height: "100%" }}>
           <Stack spacing={2.4}>
-            {CallList.map((el, idx) => {
-              return <CallElement key={idx} {...el} />;
+            {list.map((el, idx) => {
+              return (
+                <CallElement key={idx} {...el} handleClose={handleClose} />
+              );
             })}
           </Stack>
         </Stack>

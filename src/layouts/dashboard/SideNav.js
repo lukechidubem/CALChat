@@ -11,6 +11,8 @@ import { Nav_Buttons, Nav_Setting } from "../../data";
 
 import ProfileMenu from "./ProfileMenu";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { UpdateShowMobile } from "../../redux/slices/app";
 
 const getPath = (index) => {
   switch (index) {
@@ -35,6 +37,7 @@ const SideBar = () => {
   const theme = useTheme();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { onToggleMode } = useSettings();
 
@@ -102,7 +105,10 @@ const SideBar = () => {
                 p={1}
               >
                 <IconButton
-                  onClick={() => {}}
+                  onClick={() => {
+                    handleChangeTab(el.index);
+                    dispatch(UpdateShowMobile({ show_mobile: false }));
+                  }}
                   sx={{ width: "max-content", color: "#ffffff" }}
                 >
                   {el.icon}
@@ -112,6 +118,7 @@ const SideBar = () => {
               <IconButton
                 onClick={() => {
                   handleChangeTab(el.index);
+                  dispatch(UpdateShowMobile({ show_mobile: false }));
                 }}
                 sx={{
                   width: "max-content",
@@ -148,8 +155,7 @@ const SideBar = () => {
               <IconButton
                 onClick={() => {
                   handleChangeTab(el.index);
-
-                  // dispatch(UpdateTab(el.index));
+                  dispatch(UpdateShowMobile({ show_mobile: false }));
                 }}
                 sx={{
                   width: "max-content",
@@ -164,13 +170,7 @@ const SideBar = () => {
             );
           })}
         </Stack>
-        {/* </Stack> */}
         <Stack spacing={4}>
-          {/* <AntSwitch
-            defaultChecked={theme.palette.mode === "dark"}
-            onChange={onToggleMode}
-          /> */}
-          {/* Profile Menu */}
           <ProfileMenu />
         </Stack>
       </Stack>
