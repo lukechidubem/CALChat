@@ -59,7 +59,7 @@ const Group = () => {
 
   useEffect(() => {
     socket.emit("get_direct_group_conversations", { user_id }, async (data) => {
-      console.log(data, user_id); // this data is the list of conversations
+      // this data is the list of conversations
       // dispatch action
       dispatch(FetchDirectGroupConversations({ group_conversations: data }));
     });

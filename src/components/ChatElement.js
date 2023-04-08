@@ -51,7 +51,7 @@ const ChatElement = ({
   name,
   photo,
   msg,
-  lastMessage,
+  status,
   time,
   unread,
   online,
@@ -102,7 +102,7 @@ const ChatElement = ({
         justifyContent="space-between"
       >
         <Stack direction="row" spacing={2}>
-          {online ? (
+          {status === "Online" ? (
             <StyledBadge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

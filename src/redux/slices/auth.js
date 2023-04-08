@@ -63,8 +63,6 @@ export function LoginUser(formValues) {
         }
       )
       .then((response) => {
-        console.log(response);
-
         dispatch(
           slice.actions.LoginUser({
             isLoggedIn: true,
@@ -270,7 +268,6 @@ export function VerifyEmail(formValues) {
         );
       })
       .catch(function (error) {
-        console.log(error);
         // dispatch(showSnackbar({ severity: "error", message: error.message }));
         toast.error(error?.response?.data?.message);
         dispatch(

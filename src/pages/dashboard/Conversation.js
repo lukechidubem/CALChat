@@ -33,7 +33,6 @@ const Conversation = ({ isMobile, menu }) => {
       const current = await conversations.find((el) => el.id === room_id);
 
       socket.emit("get_messages", { conversation_id: current.id }, (data) => {
-        console.log(current);
         // data => list of messages
 
         dispatch(FetchCurrentMessages({ messages: data }));

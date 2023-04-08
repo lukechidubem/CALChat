@@ -141,7 +141,6 @@ const VideoCallDialog = ({ open, handleClose }) => {
           },
         }
       );
-      console.log(response, "TOKEN RESPONSE");
       this_token = response.data.token;
       // ...
     }
@@ -174,8 +173,6 @@ const VideoCallDialog = ({ open, handleClose }) => {
             { userUpdate: true }
           )
             .then(async (result) => {
-              console.log(result);
-
               // After calling the CreateStream method, you need to wait for the ZEGOCLOUD server to return the local stream object before any further operation.
               const localAudioStream = await zg.createStream({
                 camera: { audio: true, video: false },
@@ -203,7 +200,6 @@ const VideoCallDialog = ({ open, handleClose }) => {
               zg.on("publisherStateUpdate", (result) => {
                 // Callback for updates on stream publishing status.
                 // ...
-                console.log(result);
                 // * we can use this info to show connection status
               });
 
@@ -274,25 +270,23 @@ const VideoCallDialog = ({ open, handleClose }) => {
             async (roomID, updateType, streamList, extendedData) => {
               if (updateType === "ADD") {
                 // New stream added, start playing the stream.
-                console.log(
-                  "ADD",
-                  roomID,
-                  updateType,
-                  streamList,
-                  extendedData
-                );
-
+                // console.log(
+                //   "ADD",
+                //   roomID,
+                //   updateType,
+                //   streamList,
+                //   extendedData
+                // );
                 // * It would be quite useful to create and play multiple audio streams in a group call
               } else if (updateType === "DELETE") {
                 // Stream deleted, stop playing the stream.
-                console.log(
-                  "DELETE",
-                  roomID,
-                  updateType,
-                  streamList,
-                  extendedData
-                );
-
+                // console.log(
+                //   "DELETE",
+                //   roomID,
+                //   updateType,
+                //   streamList,
+                //   extendedData
+                // );
                 // * Can be used to drop audio streams (more useful in a group call)
               }
             }

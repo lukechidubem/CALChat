@@ -35,20 +35,16 @@ const GroupConversation = ({ isMobile, menu }) => {
   );
   const { group_room_id } = useSelector((state) => state.chat);
 
-  console.log("socket", socket.id);
-
   useEffect(() => {
     const setCC = async () => {
       const current = await group_conversations.find(
         (el) => el.id === group_room_id
       );
 
-      console.log("from group_conversations", current);
       socket.emit(
         "get_group_messages",
         { conversation_id: current.id },
         (data) => {
-          console.log(current);
           // data => list of messages
 
           dispatch(FetchCurrentGroupMessages({ messages: data }));
@@ -122,8 +118,6 @@ const GroupComponent = () => {
   const { group_current_messages } = useSelector(
     (state) => state.conversation.group_chat
   );
-
-  console.log("group_current_messages", group_current_messages);
 
   useEffect(() => {
     // Scroll to the bottom of the message list when new messages are added

@@ -19,8 +19,6 @@ const initialState = {
 const FormatDate = (date) => {
   const postDate = new Date(date);
 
-  console.log(postDate.getDate());
-
   const currentDate = new Date();
 
   const timeDiff = Math.abs(currentDate.getTime() - postDate.getTime());
@@ -182,8 +180,6 @@ const slice = createSlice({
       });
 
       state.group_chat.group_conversations = list;
-
-      console.log("List", list);
     },
 
     addDirectGroupConversation(state, action) {

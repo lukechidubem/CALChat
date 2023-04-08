@@ -23,7 +23,6 @@ const useAuthStore = create(
             }
           )
           .then((response) => {
-            console.log(response);
             const state = get();
             state.isLoggedIn = true;
             set({

@@ -89,7 +89,7 @@ const GroupElement = ({ photo, name, _id, handleClose }) => {
         "get_direct_group_conversations",
         { user_id },
         (data) => {
-          console.log(data, user_id); // this data is the list of conversations
+          // this data is the list of conversations
           // dispatch action
 
           dispatch(

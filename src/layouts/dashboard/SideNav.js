@@ -51,7 +51,7 @@ const SideBar = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height: "95vh",
         width: 100,
 
         backgroundColor:

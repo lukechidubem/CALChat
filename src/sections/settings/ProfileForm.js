@@ -54,7 +54,6 @@ const ProfileForm = () => {
 
         //   Send API request
         dispatch(UpdateUserProfile(formData));
-        console.log("DATA", formData);
       } catch (error) {
         console.error(error);
       }
