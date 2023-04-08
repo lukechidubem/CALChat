@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
   Dialog,
@@ -20,15 +20,13 @@ import { SelectGroupConversation } from "../../redux/slices/chat";
 
 const user_id = window.localStorage.getItem("user_id");
 
-const MEMBERS = ["Dubem", "Omalicham", "Luke", "Oma", "Bobo"];
+const MEMBERS = ["Dubem", "Luke"];
 
-// TODO: make a reusable component
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const CreateFormGroup = ({ handleClose }) => {
-  const [roomName, setRoomName] = useState("");
   const dispatch = useDispatch();
 
   const NewGroupSchema = Yup.object().shape({
@@ -55,13 +53,6 @@ const CreateFormGroup = ({ handleClose }) => {
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitSuccessful, isValid },
   } = methods;
-
-  // function handleRoomCreation() {
-  //   socket.emit("createRoom", roomName);
-  //   toast.success("Group created successful");
-
-  //   setRoomName("");
-  // }
 
   const onSubmit = async (data) => {
     try {
