@@ -230,7 +230,7 @@ const DashboardLayout = () => {
 
   return (
     <>
-      <Stack direction="row" width={"auto"}>
+      <Stack minHeight={"100vh"} direction="row" width={"auto"}>
         {/* {isDesktop && ( */}
         {/* // SideBar */}
         <SideNav />
