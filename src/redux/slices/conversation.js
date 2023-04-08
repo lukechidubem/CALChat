@@ -68,13 +68,13 @@ const slice = createSlice({
           lastMessage?.created_at ? lastMessage.created_at : Date.now()
         );
         return {
-          id: el._id,
-          user_id: user._id,
+          id: el?._id,
+          user_id: user?._id,
           //   name: `${user.firstName} ${user.lastName}`,
-          name: user.name,
-          online: user.status,
-          status: user.status,
-          photo: user.photo,
+          name: user?.name,
+          online: user?.status,
+          status: user?.status,
+          photo: user?.photo,
           msg: lastMessage?.text,
           time: `${time}`,
           unread: 0,
@@ -96,13 +96,13 @@ const slice = createSlice({
               (elm) => elm._id.toString() !== user_id
             );
             return {
-              id: this_conversation._id,
-              user_id: user._id,
-              name: user.name,
+              id: this_conversation?._id,
+              user_id: user?._id,
+              name: user?.name,
               //   name: `${user.firstName} ${user.lastName}`,
-              online: user.status === "Online",
-              status: user.status,
-              photo: user.photo,
+              online: user?.status === "Online",
+              status: user?.status,
+              photo: user?.photo,
               msg: faker.music.songName(),
               time: "9:00",
               unread: 0,
@@ -122,13 +122,13 @@ const slice = createSlice({
         (el) => el.id !== this_conversation._id
       );
       state.direct_chat.conversations.push({
-        id: this_conversation._id,
-        user_id: user._id,
+        id: this_conversation?._id,
+        user_id: user?._id,
         // name: `${user.firstName} ${user.lastName}`,
-        name: user.name,
-        online: user.status === "Online",
-        status: user.status,
-        photo: user.photo,
+        name: user?.name,
+        online: user?.status === "Online",
+        status: user?.status,
+        photo: user?.photo,
         msg: faker.music.songName(),
         time: "9:00",
         unread: 0,
