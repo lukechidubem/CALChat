@@ -147,6 +147,7 @@ const AudioCallDialog = ({ open, handleClose }) => {
       this_token = response.data.token;
       // ...
     }
+
     fetchToken();
 
     // Step 2 => Check browser compatibility
@@ -178,7 +179,6 @@ const AudioCallDialog = ({ open, handleClose }) => {
               // After calling the CreateStream method, you need to wait for the ZEGOCLOUD server to return the local stream object before any further operation.
               const localStream = await zg.createStream({
                 camera: { audio: true, video: false },
-                microphone: true,
               });
 
               audioStreamRef.current = localStream;
