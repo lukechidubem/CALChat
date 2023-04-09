@@ -17,8 +17,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchCurrentGroupMessages,
-  FetchCurrentMessages,
-  SetCurrentConversation,
   SetCurrentGroupConversation,
 } from "../../redux/slices/conversation";
 import { socket } from "../../socket";
@@ -43,7 +41,7 @@ const GroupConversation = ({ isMobile, menu }) => {
 
       socket.emit(
         "get_group_messages",
-        { conversation_id: current.id },
+        { conversation_id: current?.id },
         (data) => {
           // data => list of messages
 

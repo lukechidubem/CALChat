@@ -196,20 +196,24 @@ const ChatHeader = () => {
             alignItems="center"
             spacing={isMobile ? 1 : 3}
           >
-            <IconButton
-              onClick={() => {
-                dispatch(StartVideoCall(current_conversation.user_id));
-              }}
-            >
-              <VideoCamera />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                dispatch(StartAudioCall(current_conversation.user_id));
-              }}
-            >
-              <Phone />
-            </IconButton>
+            {chat_type === "individual" ? (
+              <IconButton
+                onClick={() => {
+                  dispatch(StartVideoCall(current_conversation.user_id));
+                }}
+              >
+                <VideoCamera />
+              </IconButton>
+            ) : null}
+            {chat_type === "individual" ? (
+              <IconButton
+                onClick={() => {
+                  dispatch(StartAudioCall(current_conversation.user_id));
+                }}
+              >
+                <Phone />
+              </IconButton>
+            ) : null}
             {!isMobile && (
               <IconButton>
                 <MagnifyingGlass />

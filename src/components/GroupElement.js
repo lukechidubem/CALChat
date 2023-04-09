@@ -9,14 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
-import {
-  ArrowDownLeft,
-  ArrowUpRight,
-  VideoCamera,
-  Phone,
-  Chat,
-  Asterisk,
-} from "phosphor-react";
+import { Chat } from "phosphor-react";
 
 import { socket } from "../socket";
 import { useDispatch, useSelector } from "react-redux";
@@ -104,7 +97,7 @@ const GroupElement = ({ photo, name, _id, handleClose }) => {
 
       socket.emit(
         "get_group_messages",
-        { conversation_id: current.id },
+        { conversation_id: current?.id },
         (data) => {
           // data => list of messages
 
