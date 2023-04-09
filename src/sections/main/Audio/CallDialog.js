@@ -311,14 +311,14 @@ const AudioCallDialog = ({ open, handleClose }) => {
                 sx={{ height: 100, width: 100 }}
                 src={faker.image.image()}
               />
-              <audio id="local-audio" controls={false} />
+              <audio id="local-audio" controls={true} />
             </Stack>
             <Stack>
               <Avatar
                 sx={{ height: 100, width: 100 }}
                 src={faker.image.image()}
               />
-              <audio id="remote-audio" controls={false} />
+              <audio id="remote-audio" controls={true} />
             </Stack>
           </Stack>
         </DialogContent>

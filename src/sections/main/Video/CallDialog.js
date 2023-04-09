@@ -323,19 +323,19 @@ const VideoCallDialog = ({ open, handleClose }) => {
           <Stack direction="row" spacing={24} p={2}>
             <Stack>
               <video
-                style={{ height: 200, width: 200 }}
+                style={{ height: 100, width: 100 }}
                 id="local-video"
-                controls={false}
+                controls={true}
               />
-              <audio id="local-audio" controls={false} />
+              <audio id="local-audio" controls={true} />
             </Stack>
             <Stack>
               <video
-                style={{ height: 500, width: 500 }}
+                style={{ height: 100, width: 100 }}
                 id="remote-video"
-                controls={false}
+                controls={true}
               />
-              <audio id="remote-audio" controls={false} />
+              <audio id="remote-audio" controls={true} />
             </Stack>
           </Stack>
         </DialogContent>
