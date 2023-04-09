@@ -127,7 +127,7 @@ const ChatHeader = () => {
           >
             <Box>
               {chat_type === "individual" &&
-              current_conversation?.status === "Online" ? (
+              current_conversation?.status == "Online" ? (
                 <StyledBadge
                   overlap="circular"
                   anchorOrigin={{

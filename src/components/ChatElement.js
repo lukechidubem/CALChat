@@ -102,7 +102,7 @@ const ChatElement = ({
         justifyContent="space-between"
       >
         <Stack direction="row" spacing={2}>
-          {status === "Online" ? (
+          {online ? (
             <StyledBadge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
