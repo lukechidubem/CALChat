@@ -161,7 +161,7 @@ const VideoCallDialog = ({ open, handleClose }) => {
         //   screenSharing: true,
         //   errInfo: {}
         // }
-        console.log(result);
+        // console.log(result);
 
         const { webRTC, microphone, camera } = result;
 
@@ -178,7 +178,8 @@ const VideoCallDialog = ({ open, handleClose }) => {
                 camera: { audio: true, video: false },
               });
               const localVideoStream = await zg.createStream({
-                camera: { audio: false, video: true },
+                // Here ++============================================
+                camera: { audio: true, video: true },
               });
 
               audioStreamRef.current = localAudioStream;
