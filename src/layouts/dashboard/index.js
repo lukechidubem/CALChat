@@ -75,14 +75,14 @@ const DashboardLayout = () => {
     dispatch(UpdateVideoCallDialog({ state: false }));
   };
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      socket.emit("disconnect_on_reload");
-    });
-    // socket.on('disconnect', () => {
-    //   console.log(`Disconnected: ${socket.id}`);
-    // });
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", () => {
+  //     socket.emit("disconnect_on_reload");
+  //   });
+  //   // socket.on('disconnect', () => {
+  //   //   console.log(`Disconnected: ${socket.id}`);
+  //   // });
+  // }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
