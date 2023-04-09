@@ -323,7 +323,7 @@ const VideoCallDialog = ({ open, handleClose }) => {
           <Stack direction="row" spacing={24} p={2}>
             <Stack>
               <video
-                style={{ height: 200, width: 200 }}
+                style={{ height: "25%", width: "25%" }}
                 id="local-video"
                 controls={false}
               />
@@ -331,7 +331,7 @@ const VideoCallDialog = ({ open, handleClose }) => {
             </Stack>
             <Stack>
               <video
-                style={{ height: 200, width: 200 }}
+                style={{ height: "70%", width: "70%" }}
                 id="remote-video"
                 controls={false}
               />
