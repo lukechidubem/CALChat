@@ -178,6 +178,7 @@ const AudioCallDialog = ({ open, handleClose }) => {
               // After calling the CreateStream method, you need to wait for the ZEGOCLOUD server to return the local stream object before any further operation.
               const localStream = await zg.createStream({
                 camera: { audio: true, video: false },
+                microphone: true,
               });
 
               audioStreamRef.current = localStream;
@@ -311,14 +312,14 @@ const AudioCallDialog = ({ open, handleClose }) => {
                 sx={{ height: 100, width: 100 }}
                 src={faker.image.image()}
               />
-              <audio id="local-audio" controls={true} />
+              <audio id="local-audio" controls={false} />
             </Stack>
             <Stack>
               <Avatar
                 sx={{ height: 100, width: 100 }}
                 src={faker.image.image()}
               />
-              <audio id="remote-audio" controls={true} />
+              <audio id="remote-audio" controls={false} />
             </Stack>
           </Stack>
         </DialogContent>

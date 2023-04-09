@@ -175,11 +175,13 @@ const VideoCallDialog = ({ open, handleClose }) => {
             .then(async (result) => {
               // After calling the CreateStream method, you need to wait for the ZEGOCLOUD server to return the local stream object before any further operation.
               const localAudioStream = await zg.createStream({
-                camera: { audio: true, video: true },
+                camera: { audio: true, video: false },
+                microphone: true,
               });
               const localVideoStream = await zg.createStream({
                 // Here ++============================================
                 camera: { audio: true, video: true },
+                microphone: true,
               });
 
               audioStreamRef.current = localAudioStream;
@@ -325,17 +327,17 @@ const VideoCallDialog = ({ open, handleClose }) => {
               <video
                 style={{ height: 100, width: 100 }}
                 id="local-video"
-                controls={true}
+                controls={false}
               />
-              <audio id="local-audio" controls={true} />
+              <audio id="local-audio" controls={false} />
             </Stack>
             <Stack>
               <video
                 style={{ height: 100, width: 100 }}
                 id="remote-video"
-                controls={true}
+                controls={false}
               />
-              <audio id="remote-audio" controls={true} />
+              <audio id="remote-audio" controls={false} />
             </Stack>
           </Stack>
         </DialogContent>
