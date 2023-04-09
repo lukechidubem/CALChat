@@ -108,7 +108,7 @@ const Groups = ({ open, handleClose }) => {
       {/* <DialogTitle>{"Friends"}</DialogTitle> */}
       <Stack p={isDesktop ? 2 : 1} sx={{ width: "100%" }}>
         <Tabs value={value} onChange={handleChange} centered>
-          <Tab label="Explore Groups" />
+          <Tab label="New Groups" />
           <Tab label="User Groups" />
           <Tab label="Own Groups" />
         </Tabs>
