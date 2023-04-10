@@ -133,11 +133,20 @@ const Group = () => {
                   All Group Chats
                 </Typography>
 
-                {group_conversations?.map((el) => {
-                  return (
-                    <ChatElement {...el} handleClick={handleClickChatElement} />
-                  );
-                })}
+                {group_conversations
+                  ?.sort(
+                    (a, b) =>
+                      new Date(a.msg.createdAt) - new Date(b.msg.createdAt)
+                  )
+
+                  .map((el) => {
+                    return (
+                      <ChatElement
+                        {...el}
+                        handleClick={handleClickChatElement}
+                      />
+                    );
+                  })}
               </Stack>
             </SimpleBarStyle>
           </Stack>
