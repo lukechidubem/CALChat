@@ -174,7 +174,7 @@ const slice = createSlice({
           name: el.name,
           img: faker.image.avatar(),
           msg: lastMessage?.text,
-
+          last_mag_time: lastMessage?.created_at,
           time: `${time}`,
           unread: 0,
         };

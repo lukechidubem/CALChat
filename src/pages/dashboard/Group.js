@@ -133,11 +133,21 @@ const Group = () => {
                   All Group Chats
                 </Typography>
 
-                {group_conversations?.map((el) => {
-                  return (
-                    <ChatElement {...el} handleClick={handleClickChatElement} />
-                  );
-                })}
+                {group_conversations
+                  .filter((el) => !el.pinned)
+                  .sort(
+                    (a, b) =>
+                      new Date(b.last_mag_time) - new Date(a.last_mag_time)
+                  )
+
+                  .map((el) => {
+                    return (
+                      <ChatElement
+                        {...el}
+                        handleClick={handleClickChatElement}
+                      />
+                    );
+                  })}
               </Stack>
             </SimpleBarStyle>
           </Stack>
