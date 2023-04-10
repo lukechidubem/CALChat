@@ -182,7 +182,7 @@ function Chats() {
                   .filter((el) => !el.pinned)
                   .sort(
                     (a, b) =>
-                      new Date(b.msg.created_at) - new Date(a.msg.created_at)
+                      new Date(a.msg.created_at) - new Date(b.msg.created_at)
                   )
                   .map((el, idx) => {
                     return (

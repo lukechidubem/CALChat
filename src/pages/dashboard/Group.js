@@ -136,7 +136,7 @@ const Group = () => {
                 {group_conversations
                   ?.sort(
                     (a, b) =>
-                      new Date(a.msg.createdAt) - new Date(b.msg.createdAt)
+                      new Date(a.msg.created_at) - new Date(b.msg.created_at)
                   )
 
                   .map((el) => {
