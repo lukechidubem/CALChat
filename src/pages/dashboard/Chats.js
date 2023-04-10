@@ -179,7 +179,10 @@ function Chats() {
                   All Chats
                 </Typography>
                 {conversations
-                  .filter((el) => !el.pinned)
+                  .filter(
+                    (el) =>
+                      !el.pinned && el.msg && Date.parse(el.msg.created_at)
+                  )
                   .sort(
                     (a, b) =>
                       new Date(b.msg.created_at) - new Date(a.msg.created_at)
