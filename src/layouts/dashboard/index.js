@@ -140,6 +140,7 @@ const DashboardLayout = () => {
               message: message.text,
               incoming: message.to === user_id,
               outgoing: message.from === user_id,
+              // unreadCount: data.unreadCount,
             })
           );
         }

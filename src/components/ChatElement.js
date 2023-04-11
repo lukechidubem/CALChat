@@ -56,6 +56,9 @@ const ChatElement = ({
   unread,
   online,
   handleClick,
+  last_recipient_id,
+  last_sender,
+  setReadConversation,
 }) => {
   const theme = useTheme();
 
@@ -66,6 +69,10 @@ const ChatElement = ({
 
   const selectedChatId = room_id?.toString();
   const selectedGroupId = group_room_id?.toString();
+
+  // if (last_sender) {
+  //   setReadConversation(false);
+  // }
 
   let isSelected = selectedChatId === id;
 
@@ -81,7 +88,7 @@ const ChatElement = ({
 
   return (
     <StyledChatBox
-      onClick={() => handleClick(id)}
+      onClick={() => handleClick(id, last_recipient_id)}
       sx={{
         width: isDesktop ? "100%" : "auto",
 
@@ -123,11 +130,14 @@ const ChatElement = ({
           <Typography sx={{ fontWeight: 600 }} variant="caption">
             {time}
           </Typography>
-          <Badge
-            className="unread-count"
-            color="primary"
-            badgeContent={unread}
-          ></Badge>
+
+          {last_sender && (
+            <Badge
+              className="unread-count"
+              color="primary"
+              badgeContent={unread}
+            ></Badge>
+          )}
         </Stack>
       </Stack>
     </StyledChatBox>

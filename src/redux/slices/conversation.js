@@ -76,9 +76,11 @@ const slice = createSlice({
           status: user?.status,
           photo: user?.photo,
           msg: lastMessage?.text,
+          last_sender: lastMessage?.from === user?._id,
+          last_recipient_id: lastMessage.to,
           last_mag_time: lastMessage?.created_at,
           time: `${time}`,
-          unread: 0,
+          unread: el?.unreadCount,
           pinned: false,
         };
       });
@@ -106,7 +108,7 @@ const slice = createSlice({
               photo: user?.photo,
               msg: faker.music.songName(),
               time: "9:00",
-              unread: 0,
+              unread: this_conversation?.unreadCount,
               pinned: false,
             };
           }
@@ -132,7 +134,7 @@ const slice = createSlice({
         photo: user?.photo,
         msg: faker.music.songName(),
         time: "9:00",
-        unread: 0,
+        unread: this_conversation?.unreadCount,
         pinned: false,
       });
     },

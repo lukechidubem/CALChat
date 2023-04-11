@@ -26,7 +26,6 @@ import Friends from "../../sections/main/Friends";
 import { socket } from "../../socket";
 import { FetchDirectConversations } from "../../redux/slices/conversation";
 import { UpdateShowMobile } from "../../redux/slices/app";
-import { v4 as uuidv4 } from "uuid";
 
 const user_id = window.localStorage.getItem("user_id");
 
@@ -67,6 +66,9 @@ function Chats() {
   const { conversations } = useSelector(
     (state) => state.conversation.direct_chat
   );
+
+  const { room_id } = useSelector((state) => state.chat);
+
   const { show_mobile } = useSelector((store) => store.app);
 
   const { friendRequests } = useSelector((state) => state.users);
@@ -80,7 +82,7 @@ function Chats() {
 
       dispatch(FetchDirectConversations({ conversations: data }));
     });
-  }, []);
+  }, [show_mobile, room_id]);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -89,9 +91,16 @@ function Chats() {
     setOpenDialog(true);
   };
 
-  const handleClickChatElement = (id) => {
+  const handleClickChatElement = (id, recipientId) => {
     dispatch(SelectConversation({ room_id: id }));
     dispatch(UpdateShowMobile({ show_mobile: true }));
+
+    // update the conversation read status on the server
+
+    socket.emit("read_conversation", {
+      conversation_id: id,
+      lastRecipientId: recipientId,
+    });
   };
 
   return (
