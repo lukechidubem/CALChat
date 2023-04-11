@@ -67,6 +67,10 @@ function Chats() {
     (state) => state.conversation.direct_chat
   );
 
+  const { current_messages } = useSelector(
+    (state) => state.conversation.direct_chat
+  );
+
   const { room_id } = useSelector((state) => state.chat);
 
   const { show_mobile } = useSelector((store) => store.app);
@@ -82,7 +86,7 @@ function Chats() {
 
       dispatch(FetchDirectConversations({ conversations: data }));
     });
-  }, [show_mobile, room_id]);
+  }, [show_mobile, room_id, current_messages]);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
